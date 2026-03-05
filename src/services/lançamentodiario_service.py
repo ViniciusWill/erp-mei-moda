@@ -1,14 +1,15 @@
 import pandas as pd
-from dataframe import Dataframesvenda, Dataframescompra, DataframesEstoque
-from compras import Lançarcomprasnoestoque
-from vendas import Lançarvendasnoestoque
-from relatorio import RelatorioCompras, RelatoriosVendas 
+from src.services.compras_service import Lançarcomprasnoestoque
+from src.services.vendas_service import Lançarvendasnoestoque
+from src.factories.dataframe_factory import Dataframesvenda, Dataframescompra, DataframesEstoque
+
 
 def lancaropdia(dados):
     novoprod = []
     contasapagar = []
     vendad = []
     vendasareceber = []
+    vendanaorealizada = []
     caixa = dados["Caixa"]
     estoque = dados["Estoque"]
     ComprasTotal = dados["Compras"]
@@ -37,10 +38,9 @@ def lancaropdia(dados):
         if operacao == "Compra":
             ComprasTotal, estoque, valorpag, novoprod, contasapagar = Lançarcomprasnoestoque(linha, estoque, ComprasTotal, NovaCompra, NovalinhaEstoque, valorpag,  novoprod, contasapagar )
         elif operacao == "Venda":
-            VendasTotal, estoque, valoreb, clientes, vendasareceber = Lançarvendasnoestoque(VendasTotal, linha, estoque, valoreb, clientes, NovaVenda, vendad, vendasareceber)
+            VendasTotal, estoque, valoreb, clientes, vendasareceber, vendanaorealizada = Lançarvendasnoestoque(VendasTotal, linha, estoque, valoreb, clientes, NovaVenda, vendad, vendasareceber, vendanaorealizada)
         else:
                print(f"Foi encontrado uma operação invalida, verifique as operações lançadas no caixa! Operação: {operacao}!")
-
 
     dados_atualizados = {
         "Caixa": caixa,
@@ -50,7 +50,4 @@ def lancaropdia(dados):
         "A Receber": valoreb,
         "A Pagar": valorpag,
         "Clientes": clientes,}
-
-  
-
-    return dados_atualizados, nomearq, novoprod, vendad
+    return dados_atualizados, nomearq, novoprod, vendad, vendanaorealizada

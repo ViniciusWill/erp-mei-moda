@@ -1,0 +1,18 @@
+# src/teste_modelos.py
+
+# Aqui estamos chamando a pasta 'models'. 
+# O Python vai ler o seu __init__.py automaticamente!
+from models import Cliente, ProdutoEstoque
+
+# Criando um cliente de teste
+novo_cliente = Cliente(nome="Vinicius")
+print(f"Cliente criado: {novo_cliente.nome}")
+
+# Criando um produto de teste
+novo_produto = ProdutoEstoque(
+    nome_produto="Camisa", 
+    tamanho="M", 
+    quantidade=10, 
+    valor_compra=35.50
+)
+print(f"Produto criado: {novo_produto.nome_produto} - Qtd: {novo_produto.quantidade}")

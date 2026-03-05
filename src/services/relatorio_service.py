@@ -1,7 +1,6 @@
 import pandas as pd 
 # Relatorio de compras 
 def RelatorioCompras(novoprod):
-
     if novoprod:
       novoprod = pd.concat(novoprod, ignore_index=True)
     else:
@@ -15,9 +14,8 @@ def RelatorioCompras(novoprod):
          print(f"{nome} - {tamanho}")
     else:
         print("Nenhum novo produto foi cadastrado no estoque.")
-
 # Relatorio de vendas
-def RelatoriosVendas(vendad):
+def RelatoriosVendas(vendad, vendanaorealizada):
     if vendad:
         vendad = pd.concat(vendad, ignore_index=True)
     else:
@@ -29,6 +27,19 @@ def RelatoriosVendas(vendad):
             nome = vend["Nome do produto"]
             tamanho = vend["Tamanho"]
             data = vend["Data"]
-            print(f"{nome} - {tamanho} - Data: {data}")
+            print(f"{nome} - {tamanho} - Data: {data}")  
     else:
         print("Nenhuma venda foi realizada hoje.")
+    if vendanaorealizada:
+        vendanaorealizada = pd.concat(vendanaorealizada, ignore_index=True)
+    else:
+        vendanaorealizada = pd.DataFrame()
+    if not vendanaorealizada.empty:
+        print("As vendas abaixos não foram lançadas devido a falta de estoque:")
+        for _, vendNR in vendanaorealizada.iterrows():
+            nome = vendNR["Nome do produto"]
+            tamanho = vendNR["Tamanho"]
+            data = vendNR["Data"]
+            print(f"{nome} - {tamanho} - Data: {data}") 
+    else:   
+        vendanaorealizada = pd.DataFrame()

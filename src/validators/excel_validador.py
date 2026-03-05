@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from config import ARQUIVO_EXCEL
+from src.config.config import ARQUIVO_EXCEL
 
 
 def encontrar_arquivo():

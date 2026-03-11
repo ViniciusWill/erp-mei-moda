@@ -6,48 +6,78 @@
     <link rel="shortcut icon" href="logo.ico" type="image/x-icon">
     <title>ERP</title>
     <style>
-    h1{
-        text-align: center;
-        background-color:  rgb(9, 63, 63);
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    div{
-        display:  inline-block;
-        border:  10x solid rgb(255, 255, 255);
-        background-color: rgb(9, 63, 63);
-        font-family:  Arial, Helvetica, sans-serif, 12;
-        text-align: center;
-        width: 200px;
-        height: 200px;
-    }
-    div:hover{
-        background-color: rgb(17, 121, 121);
-    }
+    .menu-item{
+    width: 100px;
+    height: 100px;
+    text-align: center;
+}
 
+#Venda{
+    background-color: rgb(76, 175, 80);
+}
+
+#Compra{
+    background-color: rgb(28, 124, 226);
+}
+
+#Estoque{
+    background-color: rgb(255, 152, 0);
+}
+
+#ContasPagar{
+    background-color: rgb(244,67,54);
+}
+
+#ContasReceber{
+    background-color: rgb(0,150,136);
+}
+
+#Clientes{
+    background-color: rgb(156,39,176);
+}
+    /* div > a{ 
+        margin-right: 10px;
+        padding: 10px;   
+        text-decoration: none;
+        color: white;
+    }
+    (156,39,176)
+    div > a:hover{
+        background-color: rgb(17, 121, 121);
+        
+    } */
     </style>
 </head>
 <body>
-        <h1>  </h1>
-        <div>Acessar <a href="caixa.html" rel="next">Caixa
-        </a></div>
-        <div>Acessar <a href="" rel="next">Estoque
-        </a></div>
-        <div>Acessar <a href="" rel="next">Compras
-        </a></div>
-        <div>Acessar <a href="" rel="next">Vendas
-        </a></div>
-        <div>Acessar <a href="" rel="next">Contas a Pagar
-        </a></div>
-        <div>Acessar <a href="" rel="next">Contas a Receber
-        </a></div>
-        <div>Acessar <a href="" rel="next">Clientes
-        </a></div>
-        <div>Acessar <a href="" rel="next">Participantes
-        </a></div>
+    <header>   
+    <nav>
+        <div id="Venda" class="menu-item">
+            <a href="caixa.html" rel="next">Nova Venda</a>
+        </div>
+        <div id="Compra"  class="menu-item">
+            <a href="" rel="next">Nova Compra</a>
+        </div>
+        <div id="Estoque"  class="menu-item">
+        <a href="" rel="next">Meu Estoque</a>
+        </div>
+        <div id="ContasPagar"  class="menu-item">
+        <a href="" rel="next">  Contas a Pagar</a>
+        </div>
+        <div id="ContasReceber"  class="menu-item">
+        <a href="" rel="next">  Contas a Receber</a>
+        </div>
+        <div id="Clientes"  class="menu-item">
+        <a href="" rel="next">  Clientes</a>
+        </div>
+        <div id="Participantes"  class="menu-item">
+        <a href="" rel="next">  Participantes</a>
+        </div>
         <div>
-          <a href="Controle.xlsx" download="Controle.xlsx" type=application/vnd.ms-excel> Baixar Relatorio Semanal</a></li>
+        <a href="Controle.xlsx" download="Controle.xlsx" type=application/vnd.ms-excel  class="menu-item"> Baixar Relatorio Semanal</a></li>
         </ul>
         </div>
+    </nav>
+    </header>
         
 </body>
 </html>

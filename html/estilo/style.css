@@ -1,8 +1,8 @@
 @font-face {
     font-family: 'Poppins';
-    src: url('Poppins-Bold.ttf') format('truetype');
+    src: url('../fontes/Poppins/Poppins-Bold.ttf') format('truetype');
     font-weight: bold;
-    font-weight: normal;
+    font-style: normal;
 }
 * {
     margin: 0;

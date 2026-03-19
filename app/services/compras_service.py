@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-from src.models.Compras_model import Compra, ContaPagar
-from src.database.Compras_repository import CompraRepository
-from src.database.estoque_repository import EstoqueRepository
+from app.models.Compras_model import Compra, ContaPagar
+from app.database.Compras_repository import CompraRepository
+from app.database.estoque_repository import EstoqueRepository
 
 class CompraService:
     def __init__(self):

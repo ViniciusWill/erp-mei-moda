@@ -1,5 +1,5 @@
 from .base_repository import BaseRepository
-from src.models import Participante
+from app.models import Participante
 
 class ParticipantesRepository(BaseRepository):
     def LançamentoParticipanteCampoObrigatorio(self, participante: Participante):
@@ -11,3 +11,9 @@ class ParticipantesRepository(BaseRepository):
             except Exception as e:
                 conn.rollback()
                 raise e
+    def buscar_todos(self):
+        with self.__conection__() as conn:
+           cur = conn.cursor()
+           cur.execute("SELECT * FROM Participantes")
+           rows = cur.fetchall()
+        return [{"id": row["id"], "nome": row["nome"]} for row in rows]

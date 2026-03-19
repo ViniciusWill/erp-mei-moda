@@ -1,5 +1,5 @@
 from .base_repository import BaseRepository
-from src.models.Compras_model import Compra, ContaPagar
+from app.models.Compras_model import Compra, ContaPagar
 
 class CompraRepository(BaseRepository):
     def LançamentoCompra(self, compra: Compra, nova_qtd_estoque: int):

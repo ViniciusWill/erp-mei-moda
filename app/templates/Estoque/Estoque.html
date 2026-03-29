@@ -44,8 +44,9 @@
             <thead>
                 <tr>
                     <th>Produto</th>
-                    <th>Qtd.</th>
+                    <th>Tamanho</th>
                     <th>Custo (R$)</th>
+                    <th>Qtd.</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -63,10 +64,11 @@
                     {% endif %}
                     <tr data-status="{{ status }}">
                         <td class="col-produto">{{ item.nome_produto }}</td>
+                        <td class="col-tamanho">{{ item.tamanho }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(item.valor_compra) }}</td>
                         <td class="col-qtd {% if item.quantidade <= 0 %}qtd-zerado{% elif item.quantidade <= 5 %}qtd-baixo{% endif %}">
                             {{ item.quantidade }}
                         </td>
-                        <td class="col-preco">{{ "%.2f"|format(item.valor_compra) }}</td>
                         <td>
                             <span class="badge badge--{{ status }}">{{ status_label }}</span>
                         </td>

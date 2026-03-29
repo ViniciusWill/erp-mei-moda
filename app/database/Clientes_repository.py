@@ -11,5 +11,12 @@ class ClienteRepository(BaseRepository):
             except Exception as e:
                 conn.rollback()
                 raise e
+    def buscar_todos(self):
+        with self.__conection__() as conn:
+           cur = conn.cursor()
+           cur.execute("SELECT * FROM clientes")
+           rows = cur.fetchall()
+        return [{"id": row["id"], "nome": row["nome"]} for row in rows]
+
 
       

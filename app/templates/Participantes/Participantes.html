@@ -4,7 +4,29 @@
 
 {% block content %}
 
-<div>
+<div id="Participantes">
+     <div class="estoque-tabela-wrapper">
+        <table class="estoque-tabela" id="tabelaEstoque">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in partic  %}
+                <tr>
+                    <td class="col-produto">{{ p.id }}</td>
+                    <td class="col-produto">{{ p.nome }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" class="tabela-vazia">Nenhum participante cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 

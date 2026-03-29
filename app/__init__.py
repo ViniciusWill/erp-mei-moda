@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from app.services.compras_service import CompraService
 from app.database.estoque_repository import EstoqueRepository
 from app.database.Participantes_repository import ParticipantesRepository
+from app.database.Clientes_repository import ClienteRepository
 
 def create_app():
     app = Flask(__name__)
@@ -84,10 +85,24 @@ def create_app():
 
     @app.route("/clientes")
     def clientes():
-        return render_template("clientes/clientes.html", logo_header="imagens/Clientes.png")
+        clientes_repo = ClienteRepository()
+        cli = clientes_repo.buscar_todos()
+        total_cli = len(cli)
+
+        return render_template("clientes/clientes.html", 
+                               logo_header="imagens/Clientes.png",
+                               cli=cli,
+                               total_cli=total_cli)
 
     @app.route("/participantes")
     def participantes():
-        return render_template("participantes/participantes.html", logo_header="imagens/participantes.png")
+        participantes_repo = ParticipantesRepository()
+        partic = participantes_repo.buscar_todos()
+        total_partic = len(partic)
+
+        return render_template("participantes/participantes.html", 
+                               logo_header="imagens/participantes.png",
+                               partic=partic,
+                               total_partic=total_partic)
 
     return app

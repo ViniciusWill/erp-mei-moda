@@ -30,4 +30,12 @@ class CompraRepository(BaseRepository):
             except Exception as e:
                 conn.rollback()
                 raise e
+    def buscar_todos_apagar(self):
+        with self.__conection__() as conn:
+           cur = conn.cursor()
+           cur.execute("SELECT * FROM contas_a_pagar")
+           rows = cur.fetchall()
+        return [ContaPagar(**dict(row)) for row in rows]
+        
+
             

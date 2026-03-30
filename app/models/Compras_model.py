@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import datetime
 
@@ -15,8 +15,9 @@ class Compra(BaseModel):
 
 class ContaPagar(BaseModel):
     id: Optional[int] = None
-    compra_id: int 
+    compra_id: int
     parcela: int = Field(..., gt=0)
     valor_parcela: float = Field(..., gt=0)
     valor_pendente: float = Field(..., ge=0)
     data_vencimento: datetime
+

@@ -26,26 +26,25 @@ def create_app():
 
         if request.method == "POST":
             try:
-                print("1 - Entrou no POST")
-
                 cliente_id = int(request.form.get("cliente_id"))
-                print("2 - cliente_id ok")
-
                 estoque_id = int(request.form.get("estoque_id"))
-                print("3 - estoque_id ok")
-
                 quantidade = int(request.form.get("Quantidade-ven"))
-                print("4 - quantidade ok")
-
+                parcelas = int(request.form.get("parcelas"))
                 service = VendasService()
-                print("5 - service criado")
 
-                id_venda = service.realizar_venda(
+                id_venda, valor_unitario = service.realizar_venda(
                 cliente_id=cliente_id,
                 estoque_id=estoque_id,
                 quantidade=quantidade
             )
-                print("6 - venda realizada", id_venda)
+        
+                if parcelas > 1:
+                    service.lançamento_venda_parcelada(
+                        venda_id=id_venda,
+                        valor_unitario=valor_unitario,
+                        quantidade=quantidade,
+                        parcelas=parcelas
+                    )
 
           
 

@@ -9,29 +9,13 @@ class VendasService:
         self.estoque_repo = EstoqueRepository()
 
     def realizar_venda(self, cliente_id: int, estoque_id: int, quantidade: int):
-        print("A - entrou no service")
-
         produto = self.estoque_repo.buscar_por_id(estoque_id)
-        print("B - produto buscado:", produto)
-
         if not produto:
-            print("C - produto não encontrado")
             raise ValueError("Erro: Produto não encontrado no estoque!")
-
-        print("D - quantidade atual:", produto.quantidade)
-
         if produto.quantidade < quantidade:
-            print("E - estoque insuficiente")
             raise ValueError(f"Estoque insuficiente!")
-
-        print("F - passando validação")
-
-        print("G - tentando pegar valor_unitario")
-        valor_unitario = produto.valor_compra  # 👈 suspeito
-        print("H - valor_unitario:", valor_unitario)
-
+        valor_unitario = produto.valor_compra  
         nova_quantidade = produto.quantidade - quantidade
-        print("I - nova_quantidade:", nova_quantidade)
 
         nova_venda = Venda(
         cliente_id=cliente_id,
@@ -40,14 +24,8 @@ class VendasService:
         valor_unitario=valor_unitario,
         data_venda=datetime.now()
     )
-
-        print("J - venda criada")
-
         novo_id_venda = self.venda_repo.LançamentoVenda(nova_venda, nova_quantidade)
-
-        print("K - venda salva")
-
-        return novo_id_venda
+        return novo_id_venda, valor_unitario
     
     def lançamento_venda_parcelada(self, venda_id: int, valor_unitario: float, quantidade: int, parcelas: int):
         valor_total = valor_unitario * quantidade

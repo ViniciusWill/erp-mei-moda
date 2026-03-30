@@ -4,22 +4,28 @@
 
 {% block content %}
 <div>
-    <form class="formulario">
+    <form class="formulario" action="{{ url_for('vendas') }}" method="POST">
      <p>
-        <label for="cliente">Cliente:</label>
-            <input type="text" name="Cliente" id="cliente">
+          <label for="cliente_id">Cliente:</label>
+            <select name="cliente_id" id="cliente_id" required>
+                <option value="">Selecione</option>
+                {% for c in clientes %}
+                    <option value="{{ c.id }}">{{ c.nome }}</option>
+                {% endfor %}
+            </select>
     </p>
      <p>
-        <label for ="codprod">Codigo do Produto: </label> 
-            <input type="text" name="Codigo-do-produto" id="codprod">
+        <label for ="estoque_id">Codigo do Produto: </label> 
+            <select name="estoque_id" id="estoque_id" required>
+                <option value="">Selecione</option>
+                {% for p in produtos %}
+                    <option value="{{ p.id }}">{{ p.id }}</option>
+                {% endfor %}
+            </select>
     </p>    
     <p>
-        <label for ="qntven">Quantidade: </label>
-            <input type="text" name="Quantidade-ven" id="qntven">
-    </p>
-    <p>
-        <label for="dataven">Data da Venda: </label>
-            <input type="date" name="Data-ven" id="dataven">
+        <label for ="Quantidade-ven">Quantidade: </label>
+            <input type="number" name="Quantidade-ven" id="qntven" min="1" required>
     </p>
     <p>
         <label for="forpag">Forma de Pagamento: </label> 

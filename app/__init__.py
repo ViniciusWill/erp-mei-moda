@@ -1,5 +1,5 @@
 from flask import Flask, app, cli, render_template, request, redirect, url_for, flash
-from datetime import datetime
+from datetime import date, datetime
 from app.services.compras_service import CompraService
 from app.services.vendas_service import VendasService
 from app.services.clientes_service import ClienteService
@@ -19,9 +19,42 @@ def create_app():
     def index():
         return render_template("index.html", logo_header="imagens/logo.ico")
 
-    @app.route("/vendas")
+    @app.route("/vendas", methods=["GET", "POST"])
     def vendas():
-        return render_template("vendas/venda.html", logo_header="imagens/venda.png")
+        estoque_repo = EstoqueRepository()
+        clientes_repo = ClienteRepository()
+
+        if request.method == "POST":
+            try:
+                print("1 - Entrou no POST")
+
+                cliente_id = int(request.form.get("cliente_id"))
+                print("2 - cliente_id ok")
+
+                estoque_id = int(request.form.get("estoque_id"))
+                print("3 - estoque_id ok")
+
+                quantidade = int(request.form.get("Quantidade-ven"))
+                print("4 - quantidade ok")
+
+                service = VendasService()
+                print("5 - service criado")
+
+                id_venda = service.realizar_venda(
+                cliente_id=cliente_id,
+                estoque_id=estoque_id,
+                quantidade=quantidade
+            )
+                print("6 - venda realizada", id_venda)
+
+          
+
+            except Exception as e:
+                flash(f"Erro ao lançar venda: {str(e)}", "erro")
+        
+        produtos      = estoque_repo.buscar_todos()
+        clientes      = clientes_repo.buscar_todos()
+        return render_template("vendas/venda.html", logo_header="imagens/venda.png", produtos=produtos, clientes=clientes)
 
     @app.route("/compras", methods=["GET", "POST"])
     def compras():
@@ -63,6 +96,7 @@ def create_app():
                                logo_header="imagens/compra.png",
                                produtos=produtos,
                                participantes=participantes)
+    
 
     @app.route("/estoque")
     def estoque():

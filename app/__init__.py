@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, app, cli, render_template, request, redirect, url_for, flash
 from datetime import datetime
 from app.services.compras_service import CompraService
+from app.services.vendas_service import VendasService
+from app.services.clientes_service import ClienteService
+from app.services.participantes_service import ParticipanteService
 from app.database.estoque_repository import EstoqueRepository
 from app.database.Participantes_repository import ParticipantesRepository
 from app.database.Clientes_repository import ClienteRepository
@@ -128,26 +131,44 @@ def create_app():
         total_vencidas=total_vencidas,
     )
 
-    @app.route("/clientes")
+    @app.route("/clientes", methods=["GET", "POST"])  # <-- faltava isso
     def clientes():
+  
+        if request.method == "POST":
+            try:
+                nome = request.form.get("nome")
+                service = ClienteService()
+                service.LançamentoClienteCamposObrigatorios(nome=nome)
+                flash("Cliente cadastrado com sucesso!", "sucesso")
+                return redirect(url_for("clientes"))
+            except  Exception as e:
+                flash(f"Erro ao cadastrar cliente: {str(e)}", "erro")
+
         clientes_repo = ClienteRepository()
         cli = clientes_repo.buscar_todos()
         total_cli = len(cli)
-
-        return render_template("clientes/clientes.html", 
+        return render_template("clientes/clientes.html",
                                logo_header="imagens/Clientes.png",
                                cli=cli,
                                total_cli=total_cli)
 
-    @app.route("/participantes")
+    @app.route("/participantes", methods=["GET", "POST"])
     def participantes():
+        if request.method == "POST":
+            try:
+                nome = request.form.get("nome")
+                service = ParticipanteService()
+                service.LançamentoParticipanteCampoObrigatorio(nome=nome)
+                flash("Participante cadastrado com sucesso!", "sucesso")
+                return redirect(url_for("participantes"))
+            except  Exception as e:
+                flash(f"Erro ao cadastrar participante: {str(e)}", "erro")
+
         participantes_repo = ParticipantesRepository()
         partic = participantes_repo.buscar_todos()
         total_partic = len(partic)
-
-        return render_template("participantes/participantes.html", 
+        return render_template("participantes/participantes.html",
                                logo_header="imagens/participantes.png",
                                partic=partic,
                                total_partic=total_partic)
-
     return app

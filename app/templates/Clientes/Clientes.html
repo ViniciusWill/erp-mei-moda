@@ -27,5 +27,15 @@
             </tbody>
         </table>
     </div>
+    <form class="formulario" action="{{ url_for('clientes') }}" method="POST">
+    <p>
+        <label for="nome">Nome do cliente</label>
+        <input type="text" name="nome" id="nome" placeholder="Nome do cliente" required>
+    </p>
+    <p>
+        <input type="submit" value="Cadastrar novo Cliente">
+    </p>
+    </form>
 </div>
 {% endblock %}
+

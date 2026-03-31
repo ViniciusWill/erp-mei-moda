@@ -1,4 +1,4 @@
-from flask import app, render_template, Blueprint
+from flask import render_template, Blueprint
 from app.database.Compras_repository import CompraRepository
 from datetime import datetime
 

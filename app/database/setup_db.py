@@ -1,30 +1,47 @@
+import os
 import sqlite3
+import psycopg2
 from pathlib import Path
 
 def criar_banco():
-    diretorio_dados = Path(r"C:\Users\vinicius.gomes\Desktop\py\loja-roupa-py\dados")
+
+    db_url = os.environ.get("DATABASE_URL")
+
+    # Configurações para SQLite 
+    diretorio_dados = Path(__file__).parent.parent.parent / "dados"
     diretorio_dados.mkdir(parents=True, exist_ok=True)
     caminho_banco = diretorio_dados / "sistema_loja.db"
 
-    try:
+    # --- LÓGICA DE CONEXÃO E SINTAXE ---
+    if db_url:
+        print("Conectando ao PostgreSQL (Render)...")
+        url_corrigida = db_url.replace("postgres://", "postgresql://", 1)
+        conn = psycopg2.connect(url_corrigida)
+        id_type = "SERIAL PRIMARY KEY" 
+    else:
+        print("Conectando ao SQLite (Local)...")
         conn = sqlite3.connect(caminho_banco)
+        id_type = "INTEGER PRIMARY KEY AUTOINCREMENT"
+
+    try:
         cursor = conn.cursor()
 
-   
-        cursor.execute("PRAGMA foreign_keys = ON;")
+        # Pragma só existe no SQLite
+        if not db_url:
+            cursor.execute("PRAGMA foreign_keys = ON;")
 
         # 1. Tabela: Clientes
-        cursor.execute('''
+        cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS clientes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 nome TEXT NOT NULL UNIQUE
             )
         ''')
 
         # 2. Tabela: Estoque
-        cursor.execute('''
+        cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS estoque (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 nome_produto TEXT NOT NULL,
                 tamanho TEXT NOT NULL,
                 quantidade INTEGER NOT NULL,
@@ -33,25 +50,32 @@ def criar_banco():
             )
         ''')
 
-        # 3. Tabela: Compras
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS compras (
-            id  INTEGER PRIMARY KEY AUTOINCREMENT,
-            estoque_id     INTEGER NOT NULL,
-            fornecedor_id  INTEGER NOT NULL,
-            quantidade     TEXT    NOT NULL,
-            valor_unitario REAL    NOT NULL,
-            data_compra    TEXT    NOT NULL,
-            FOREIGN KEY (estoque_id) REFERENCES estoque (id),
-            FOREIGN KEY(fornecedor_id) REFERENCES Participantes (id))
-                )
+        # 3. Tabela: Participantes 
+        cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS Participantes (
+                id {id_type},
+                nome TEXT NOT NULL UNIQUE
             )
         ''')
 
-        # 4. Tabela: Vendas
-        cursor.execute('''
+        # 4. Tabela: Compras 
+        cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS compras (
+                id {id_type},
+                estoque_id INTEGER NOT NULL,
+                fornecedor_id INTEGER NOT NULL,
+                quantidade INTEGER NOT NULL, 
+                valor_unitario REAL NOT NULL,
+                data_compra TEXT NOT NULL,
+                FOREIGN KEY (estoque_id) REFERENCES estoque (id),
+                FOREIGN KEY (fornecedor_id) REFERENCES Participantes (id)
+            )
+        ''')
+
+        # 5. Tabela: Vendas
+        cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS vendas (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 cliente_id INTEGER NOT NULL,
                 estoque_id INTEGER NOT NULL,
                 quantidade INTEGER NOT NULL,
@@ -62,10 +86,10 @@ def criar_banco():
             )
         ''')
 
-        # 5. Tabela: Contas a Pagar
-        cursor.execute('''
+        # 6. Tabela: Contas a Pagar
+        cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS contas_a_pagar (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 compra_id INTEGER NOT NULL,
                 parcela INTEGER NOT NULL,
                 valor_parcela REAL NOT NULL,
@@ -75,10 +99,10 @@ def criar_banco():
             )
         ''')
 
-        # 6. Tabela: Contas a Receber
-        cursor.execute('''
+        # 7. Tabela: Contas a Receber
+        cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS contas_a_receber (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id {id_type},
                 venda_id INTEGER NOT NULL,
                 parcela INTEGER NOT NULL,
                 valor_parcela REAL NOT NULL,
@@ -87,18 +111,15 @@ def criar_banco():
                 FOREIGN KEY (venda_id) REFERENCES vendas (id)
             )
         ''')
-        cursor.execute('''                 
-            CREATE TABLE if not exists Participantes (
-                id integer PRIMARY KEY  AUTOINCREMENT,
-                nome TEXTO NOT NULL UNIQUE)
-                       ''')
 
         conn.commit()
-        conn.close()
-        print(f"Tabelas criadas com sucesso!")
+        print("Tabelas criadas com sucesso!")
         
-    except sqlite3.Error as e:
-        print(f"Erro: {e}")
+    except Exception as e:
+        conn.rollback() 
+        print(f"Erro ao criar tabelas: {e}")
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
     criar_banco()

@@ -2,18 +2,14 @@ from .base_repository import BaseRepository
 from app.models import Participante
 
 class ParticipantesRepository(BaseRepository):
+    
     def LançamentoParticipanteCampoObrigatorio(self, participante: Participante):
-        with self.__conection__() as conn:
-            try:
-                cur = conn.cursor()
-                cur.execute("""INSERT INTO Participantes (nome) VALUES (?)""", (participante.nome,))
-                conn.commit()
-            except Exception as e:
-                conn.rollback()
-                raise e
+        """Cadastra um novo participante usando apenas o campo obrigatório (nome)."""
+        query = "INSERT INTO Participantes (nome) VALUES (?)"
+        self.executar_comando(query, (participante.nome,))
+
     def buscar_todos(self):
-        with self.__conection__() as conn:
-           cur = conn.cursor()
-           cur.execute("SELECT * FROM Participantes")
-           rows = cur.fetchall()
+        """Retorna a lista de todos os participantes cadastrados."""
+        query = "SELECT * FROM Participantes"
+        rows = self.executar_select(query)
         return [{"id": row["id"], "nome": row["nome"]} for row in rows]

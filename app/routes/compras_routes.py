@@ -43,7 +43,7 @@ def compras():
         produtos      = estoque_repo.buscar_todos()
         participantes = participantes_repo.buscar_todos()
 
-        return render_template("Compras/compra.html",
+        return render_template("Compras/Compra.html",
                                logo_header="imagens/compra.png",
                                produtos=produtos,
                                participantes=participantes)

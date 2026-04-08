@@ -8,6 +8,7 @@ class BaseRepository:
     def __init__(self):
         self.caminho_db = Path(__file__).parent.parent.parent / "dados" / "sistema_loja.db"
         self.db_url = os.environ.get("DATABASE_URL") 
+        self.caminho_db.parent.mkdir(parents=True, exist_ok=True)
     
     def _get_connection(self):
         """Método privado apenas para obter a conexão correta."""

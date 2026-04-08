@@ -31,58 +31,66 @@
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'vendas.vendas' %}
-            <a href="{{ url_for('vendas.vendas') }}" title="Vendas"> 
+            {% if request.endpoint != 'vendas' %}
+            <a href="{{ url_for('vendas') }}" title="Vendas"> 
                 <div class="icones-interativos" id="venda">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/venda.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'compras.compras' %}
-            <a href="{{ url_for('compras.compras') }}" title="Compras">
+            {% if request.endpoint != 'compras' %}
+            <a href="{{ url_for('compras') }}" title="Compras">
                 <div class="icones-interativos" id="compra">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/compra.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'estoque.estoque' %}
-            <a href="{{ url_for('estoque.estoque') }}" title="Estoque">
+            {% if request.endpoint != 'estoque' %}
+            <a href="{{ url_for('estoque') }}" title="Estoque">
                 <div class="icones-interativos" id="estoque">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/estoque.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'contas_a_pagar.contas_pagar' %}
-            <a href="{{ url_for('contas_a_pagar.contas_pagar') }}" title="Contas a Pagar">
+            {% if request.endpoint != 'contas_pagar' %}
+            <a href="{{ url_for('contas_pagar') }}" title="Contas a Pagar">
                 <div class="icones-interativos" id="contas_pagar">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/pagar.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'contas_a_receber.contas_receber' %}
-            <a href="{{ url_for('contas_a_receber.contas_receber') }}" title="Contas a Receber">
+            {% if request.endpoint != 'contas_receber' %}
+            <a href="{{ url_for('contas_receber') }}" title="Contas a Receber">
                 <div class="icones-interativos" id="contas_receber">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/receber.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'clientes.clientes' %}
-            <a href="{{ url_for('clientes.clientes') }}" title="Clientes">
+            {% if request.endpoint != 'clientes' %}
+            <a href="{{ url_for('clientes') }}" title="Clientes">
                 <div class="icones-interativos" id="clientes">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Clientes.png') }}">
                 </div>
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'participantes.participantes' %}
-            <a href="{{ url_for('participantes.participantes') }}" title="Participantes">
+            {% if request.endpoint != 'participantes' %}
+            <a href="{{ url_for('participantes') }}" title="Participantes">
                 <div class="icones-interativos" id="participantes">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/participantes.png') }}">
+                </div>
+            </a>
+            {% endif %}
+
+            {% if request.endpoint != 'relatorios' %}
+            <a href="{{ url_for('relatorios') }}" title="Relatorios">
+                <div class="icones-interativos" id="relatorios">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Relatorio.png') }}">
                 </div>
             </a>
             {% endif %}

@@ -8,56 +8,56 @@
 
 {% block content %}
 <nav class="menu-nav">
-    <a href="{{ url_for('vendas.vendas') }}">
+    <a href="{{ url_for('vendas') }}">
          <div id="venda" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/venda.png') }}" class="icones" alt="Venda">
             <span>Nova Venda</span>
         </div>
     </a>
     
-    <a href="{{ url_for('compras.compras') }}">
+    <a href="{{ url_for('compras') }}">
         <div id="compra" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/compra.png') }}" class="icones" alt="Compra">
             <span>Nova Compra</span>
         </div>
     </a>
     
-    <a href="{{ url_for('estoque.estoque') }}">
+    <a href="{{ url_for('estoque') }}">
         <div id="estoque" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/estoque.png') }}" class="icones" alt="Estoque">
             <span>Meu Estoque</span>
         </div>
     </a>
     
-    <a href="{{ url_for('contas_a_pagar.contas_pagar') }}"> 
+    <a href="{{ url_for('contas_pagar') }}"> 
         <div id="contas_pagar" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/pagar.png') }}" class="icones" alt="APagar">
             <span>Contas a Pagar</span>
         </div>
     </a>
     
-    <a href="{{ url_for('contas_a_receber.contas_receber') }}">
+    <a href="{{ url_for('contas_receber') }}">
          <div id="contas_receber" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/receber.png') }}" class="icones" alt="AReceber">
             <span>Contas a Receber</span>
         </div>
     </a>
     
-    <a href="{{ url_for('clientes.clientes') }}"> <div id="clientes" class="menu-item">
+    <a href="{{ url_for('clientes') }}"> <div id="clientes" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/Clientes.png') }}" class="icones" alt="Clientes">
             <span>Clientes</span>
         </div>
     </a>
     
-    <a href="{{ url_for('participantes.participantes') }}">
+    <a href="{{ url_for('participantes') }}">
          <div id="participantes" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/participantes.png') }}" class="icones" alt="Participantes">
             <span>Participantes</span>
         </div>
     </a>
     
-    <a href="{{ url_for('static', filename='dados/Controle.xlsx') }}" download>
-        <div class="menu-item" id="download">
+    <a href="{{ url_for('relatorios') }}">
+        <div  id="relatorios" class="menu-item">
             <img src="{{ url_for('static', filename='imagens/Relatorio.png') }}" class="icones" alt="Relatorio">
             <span>Relatórios</span>
         </div>

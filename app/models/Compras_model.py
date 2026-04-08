@@ -5,13 +5,11 @@ from datetime import datetime
 
 class Compra(BaseModel):
     id: Optional[int] = None
-    fornecedor_id: int
     estoque_id: int
-    tamanho: str
+    fornecedor_id: int
     quantidade: int
-    data_compra: datetime
     valor_unitario: float = Field(..., gt=0)
-
+    data_compra: datetime
 
 class ContaPagar(BaseModel):
     id: Optional[int] = None

@@ -20,7 +20,7 @@ def participantes():
         participantes_repo = ParticipantesRepository()
         partic = participantes_repo.buscar_todos()
         total_partic = len(partic)
-        return render_template("Participantes/Participantes.html",
+        return render_template("participantes/Participantes.html",
                                logo_header="imagens/participantes.png",
                                partic=partic,
                                total_partic=total_partic)

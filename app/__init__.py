@@ -54,7 +54,7 @@ def create_app():
         
         produtos      = estoque_repo.buscar_todos()
         clientes      = clientes_repo.buscar_todos()
-        return render_template("vendas/venda.html", logo_header="imagens/venda.png", produtos=produtos, clientes=clientes)
+        return render_template("vendas/Venda.html", logo_header="imagens/venda.png", produtos=produtos, clientes=clientes)
 
     @app.route("/compras", methods=["GET", "POST"])
     def compras():
@@ -92,7 +92,7 @@ def create_app():
         produtos      = estoque_repo.buscar_todos()
         participantes = participantes_repo.buscar_todos()
 
-        return render_template("compras/compra.html",
+        return render_template("compras/Compra.html",
                                logo_header="imagens/compra.png",
                                produtos=produtos,
                                participantes=participantes)
@@ -108,7 +108,7 @@ def create_app():
         estoque_zerado = sum(1 for p in produtos if p.quantidade <= 0)
 
         return render_template(
-            "estoque/estoque.html",
+            "estoque/Estoque.html",
             logo_header="imagens/estoque.png",
             produtos=produtos,
             total_itens=total_itens,
@@ -181,7 +181,7 @@ def create_app():
         clientes_repo = ClienteRepository()
         cli = clientes_repo.buscar_todos()
         total_cli = len(cli)
-        return render_template("clientes/clientes.html",
+        return render_template("clientes/Clientes.html",
                                logo_header="imagens/Clientes.png",
                                cli=cli,
                                total_cli=total_cli)
@@ -201,7 +201,7 @@ def create_app():
         participantes_repo = ParticipantesRepository()
         partic = participantes_repo.buscar_todos()
         total_partic = len(partic)
-        return render_template("participantes/participantes.html",
+        return render_template("participantes/Participantes.html",
                                logo_header="imagens/participantes.png",
                                partic=partic,
                                total_partic=total_partic)
@@ -219,7 +219,7 @@ def create_app():
         faturamento_total = sum(v.valor_unitario * v.quantidade for v in vendas)
 
         return render_template(
-            "Relatorios/Relatorios.html",
+            "relatorios/Relatorios.html",
             logo_header="imagens/Relatorio.png",
             compras=compras,
             vendas=vendas,

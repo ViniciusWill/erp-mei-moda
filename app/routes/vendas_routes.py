@@ -39,4 +39,4 @@ def vendas():
         
     produtos      = estoque_repo.buscar_todos()
     clientes      = clientes_repo.buscar_todos()
-    return render_template("Vendas/Venda.html", logo_header="imagens/venda.png", produtos=produtos, clientes=clientes)
+    return render_template("vendas/Venda.html", logo_header="imagens/venda.png", produtos=produtos, clientes=clientes)

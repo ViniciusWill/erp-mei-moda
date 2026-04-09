@@ -12,7 +12,7 @@ def relatorios():
     total_vendas = vendas_repo.selecionar_todas_vendas()
 
     return render_template(
-        "Relatorios/Relatorios.html",
+        "relatorios/Relatorios.html",
         logo_header="imagens/Relatorio.png",
         total_compras=total_compras,
         total_vendas=total_vendas

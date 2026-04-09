@@ -22,7 +22,7 @@ def clientes():
         clientes_repo = ClienteRepository()
         cli = clientes_repo.buscar_todos()
         total_cli = len(cli)
-        return render_template("Clientes/Clientes.html",
+        return render_template("clientes/Clientes.html",
                                logo_header="imagens/Clientes.png",
                                cli=cli,
                                total_cli=total_cli)

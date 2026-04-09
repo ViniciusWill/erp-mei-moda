@@ -1,47 +1,45 @@
-import os
-import sqlite3
-import psycopg2
-from psycopg2.extras import RealDictCursor
-from pathlib import Path
+from .base_repository import BaseRepository
+from app.models.Compras_model import Compra, ContaPagar
 
-class BaseRepository:
-    def __init__(self):
-        self.caminho_db = Path(__file__).parent.parent.parent / "dados" / "sistema_loja.db"
-        self.db_url = os.environ.get("DATABASE_URL") 
-        self.caminho_db.parent.mkdir(parents=True, exist_ok=True)
-    
-    def _get_connection(self):
-        """Método privado apenas para obter a conexão correta."""
-        if self.db_url:
-            url_corrigida = self.db_url.replace("postgres://", "postgresql://", 1)
-            return psycopg2.connect(url_corrigida, cursor_factory=RealDictCursor)
-        else:
-            conn = sqlite3.connect(self.caminho_db)
-            conn.row_factory = sqlite3.Row
-            return conn
 
-    def executar_select(self, query, parametros=()):
-        """Executa comandos de leitura (SELECT) e fecha a conexão."""
-        conn = self._get_connection()
-        try:
-            cur = conn.cursor()
-            if self.db_url:
-                query = query.replace("?", "%s")
-                
-            cur.execute(query, parametros)
-            return cur.fetchall()
-        finally:
-            conn.close()
+class CompraRepository(BaseRepository):
 
-    def executar_comando(self, query, parametros=()):
-        """Executa comandos de escrita (INSERT, UPDATE, DELETE)."""
-        conn = self._get_connection()
-        try:
-            with conn:
-                cur = conn.cursor()
-                if self.db_url:
-                    query = query.replace("?", "%s")
-                    
-                cur.execute(query, parametros)
-        finally:
-            conn.close() 
+    def lancamento_compra(self, compra: Compra, nova_qtd_estoque: int):
+        """Insere a compra e atualiza o estoque em uma única transação."""
+        operacoes = [
+            (
+                """INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (
+                    compra.estoque_id,
+                    compra.fornecedor_id,
+                    compra.quantidade,
+                    compra.valor_unitario,
+                    compra.data_compra.strftime("%Y-%m-%d %H:%M:%S"),
+                ),
+            ),
+            (
+                "UPDATE estoque SET quantidade = ? WHERE id = ?",
+                (nova_qtd_estoque, compra.estoque_id),
+            ),
+        ]
+        ids = self.executar_transacao(operacoes)
+        novo_id = ids[0]  
+        return novo_id, compra.valor_unitario
+
+    def lancamento_compra_parcelada(self, nova_parcela: ContaPagar):
+        self.executar_insert(
+            """INSERT INTO contas_a_pagar (compra_id, parcela, valor_parcela, valor_pendente, data_vencimento)
+               VALUES (?, ?, ?, ?, ?)""",
+            (
+                nova_parcela.compra_id,
+                nova_parcela.parcela,
+                nova_parcela.valor_parcela,
+                nova_parcela.valor_pendente,
+                nova_parcela.data_vencimento,
+            ),
+        )
+
+    def buscar_todos_apagar(self):
+        rows = self.executar_select("SELECT * FROM contas_a_pagar")
+        return [ContaPagar(**dict(row)) for row in rows]

@@ -1,70 +1,207 @@
-import psycopg2
 import os
+import sqlite3
 from datetime import datetime, timedelta
+from pathlib import Path
+
+import psycopg2
+
+
+def conectar_banco():
+    database_url = os.getenv("DATABASE_URL")
+
+    if database_url:
+        url = database_url.replace("postgres://", "postgresql://", 1)
+        return psycopg2.connect(url), True
+
+    caminho_banco = Path(__file__).resolve().parent.parent / "dados" / "sistema_loja.db"
+    conn = sqlite3.connect(caminho_banco)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn, False
+
+
+def adaptar_query(query: str, is_postgres: bool) -> str:
+    return query.replace("?", "%s") if is_postgres else query
+
+
+def buscar_ou_criar(cursor, is_postgres: bool, tabela: str, coluna: str, valor):
+    cursor.execute(
+        adaptar_query(f"SELECT id FROM {tabela} WHERE {coluna} = ?", is_postgres),
+        (valor,),
+    )
+    existente = cursor.fetchone()
+    if existente:
+        return existente[0]
+
+    cursor.execute(
+        adaptar_query(f"INSERT INTO {tabela} ({coluna}) VALUES (?)", is_postgres),
+        (valor,),
+    )
+
+    cursor.execute(
+        adaptar_query(f"SELECT id FROM {tabela} WHERE {coluna} = ?", is_postgres),
+        (valor,),
+    )
+    criado = cursor.fetchone()
+    return criado[0]
+
 
 def popular_banco():
-    DATABASE_URL = os.getenv('DATABASE_URL')
-    
-    if not DATABASE_URL:
-        print("Erro: Variável DATABASE_URL não encontrada.")
-        return
-
     try:
-        conn = psycopg2.connect(DATABASE_URL)
+        conn, is_postgres = conectar_banco()
         cur = conn.cursor()
-        print("Conectando ao banco para inserção...")
+        print("Conectando ao banco para insercao...")
 
-        # 1. Inserir Participantes (tudo em minúsculo e sem aspas)
-        cur.execute("INSERT INTO participantes (nome) VALUES ('Fornecedor Alpha') RETURNING id")
-        fornecedor_id = cur.fetchone()[0]
+        fornecedor_id = buscar_ou_criar(cur, is_postgres, "Participantes", "nome", "Fornecedor Alpha")
+        cliente_id = buscar_ou_criar(cur, is_postgres, "clientes", "nome", "Joao Silva")
 
-        # 2. Inserir Clientes
-        cur.execute("INSERT INTO clientes (nome) VALUES ('João Silva') RETURNING id")
-        cliente_id = cur.fetchone()[0]
+        cur.execute(
+            adaptar_query(
+                """
+                SELECT id FROM estoque
+                WHERE nome_produto = ? AND tamanho = ?
+                """,
+                is_postgres,
+            ),
+            ("Camiseta Polo", "G"),
+        )
+        estoque_existente = cur.fetchone()
 
-        # 3. Inserir Estoque
-        cur.execute("""
-            INSERT INTO estoque (nome_produto, tamanho, quantidade, valor_compra) 
-            VALUES ('Camiseta Polo', 'G', 50, 25.50) RETURNING id
-        """)
-        produto_id = cur.fetchone()[0]
+        if estoque_existente:
+            produto_id = estoque_existente[0]
+        else:
+            cur.execute(
+                adaptar_query(
+                    """
+                    INSERT INTO estoque (nome_produto, tamanho, quantidade, valor_compra)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    is_postgres,
+                ),
+                ("Camiseta Polo", "G", 50, 25.50),
+            )
+            cur.execute(
+                adaptar_query(
+                    """
+                    SELECT id FROM estoque
+                    WHERE nome_produto = ? AND tamanho = ?
+                    """,
+                    is_postgres,
+                ),
+                ("Camiseta Polo", "G"),
+            )
+            produto_id = cur.fetchone()[0]
 
-        # 4. Inserir uma Compra
-        # Nota: as colunas também costumam ficar em minúsculas, então mudei "Data_Compra" para "data_compra"
-        cur.execute("""
-            INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra) 
-            VALUES (%s, %s, 10, 20.00, %s) RETURNING id
-        """, (produto_id, fornecedor_id, datetime.now()))
-        compra_id = cur.fetchone()[0]
+        agora = datetime.now()
+        agora_str = agora.isoformat(sep=" ", timespec="seconds")
+        vencimento_str = (agora + timedelta(days=30)).isoformat(sep=" ", timespec="seconds")
 
-        # 5. Inserir uma Conta a Pagar
-        cur.execute("""
-            INSERT INTO contas_a_pagar (compra_id, parcela, valor_parcela, valor_pendente, data_vencimento) 
-            VALUES (%s, 1, 200.00, 200.00, %s)
-        """, (compra_id, datetime.now() + timedelta(days=30)))
+        cur.execute(
+            adaptar_query(
+                """
+                SELECT 1 FROM compras
+                WHERE estoque_id = ? AND fornecedor_id = ? AND quantidade = ?
+                """,
+                is_postgres,
+            ),
+            (produto_id, fornecedor_id, 10),
+        )
+        if not cur.fetchone():
+            cur.execute(
+                adaptar_query(
+                    """
+                    INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    is_postgres,
+                ),
+                (produto_id, fornecedor_id, 10, 20.00, agora_str),
+            )
+            cur.execute(
+                adaptar_query(
+                    """
+                    SELECT id FROM compras
+                    WHERE estoque_id = ? AND fornecedor_id = ? AND quantidade = ?
+                    ORDER BY id DESC
+                    LIMIT 1
+                    """,
+                    is_postgres,
+                ),
+                (produto_id, fornecedor_id, 10),
+            )
+            compra = cur.fetchone()
+            compra_id = compra[0]
+            cur.execute(
+                adaptar_query(
+                    """
+                    INSERT INTO contas_a_pagar (compra_id, parcela, valor_parcela, valor_pendente, data_vencimento)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    is_postgres,
+                ),
+                (compra_id, 1, 200.00, 200.00, vencimento_str),
+            )
 
-        # 6. Inserir uma Venda
-        cur.execute("""
-            INSERT INTO vendas (cliente_id, estoque_id, quantidade, valor_unitario, data_venda) 
-            VALUES (%s, %s, 2, 80.00, %s) RETURNING id
-        """, (cliente_id, produto_id, datetime.now()))
-        venda_id = cur.fetchone()[0]
-
-        # 7. Inserir uma Conta a Receber
-        cur.execute("""
-            INSERT INTO contas_a_receber (venda_id, parcela, valor_parcela, valor_pendente, data_vencimento) 
-            VALUES (%s, 1, 160.00, 160.00, %s)
-        """, (venda_id, datetime.now() + timedelta(days=30)))
+        cur.execute(
+            adaptar_query(
+                """
+                SELECT 1 FROM vendas
+                WHERE cliente_id = ? AND estoque_id = ? AND quantidade = ?
+                """,
+                is_postgres,
+            ),
+            (cliente_id, produto_id, 2),
+        )
+        if not cur.fetchone():
+            cur.execute(
+                adaptar_query(
+                    """
+                    INSERT INTO vendas (cliente_id, estoque_id, quantidade, valor_unitario, data_venda)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    is_postgres,
+                ),
+                (cliente_id, produto_id, 2, 80.00, agora_str),
+            )
+            cur.execute(
+                adaptar_query(
+                    """
+                    SELECT id FROM vendas
+                    WHERE cliente_id = ? AND estoque_id = ? AND quantidade = ?
+                    ORDER BY id DESC
+                    LIMIT 1
+                    """,
+                    is_postgres,
+                ),
+                (cliente_id, produto_id, 2),
+            )
+            venda = cur.fetchone()
+            venda_id = venda[0]
+            cur.execute(
+                adaptar_query(
+                    """
+                    INSERT INTO contas_a_receber (venda_id, parcela, valor_parcela, valor_pendente, data_vencimento)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    is_postgres,
+                ),
+                (venda_id, 1, 160.00, 160.00, vencimento_str),
+            )
 
         conn.commit()
-        print("Dados fictícios inseridos com sucesso!")
+        print("Dados iniciais verificados com sucesso.")
 
     except Exception as e:
         print(f"Erro ao inserir dados: {e}")
+        if "conn" in locals():
+            conn.rollback()
+        raise
     finally:
-        if 'conn' in locals() and conn:
+        if "cur" in locals():
             cur.close()
+        if "conn" in locals():
             conn.close()
+
 
 if __name__ == "__main__":
     popular_banco()

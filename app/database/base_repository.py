@@ -1,45 +1,104 @@
-from .base_repository import BaseRepository
-from app.models.Compras_model import Compra, ContaPagar
+import os
+import re
+import sqlite3
+from pathlib import Path
+
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 
-class CompraRepository(BaseRepository):
+class BaseRepository:
+    def __init__(self):
+        self.db_url = os.environ.get("DATABASE_URL")
+        self.is_postgres = bool(self.db_url)
 
-    def lancamento_compra(self, compra: Compra, nova_qtd_estoque: int):
-        """Insere a compra e atualiza o estoque em uma única transação."""
-        operacoes = [
-            (
-                """INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (
-                    compra.estoque_id,
-                    compra.fornecedor_id,
-                    compra.quantidade,
-                    compra.valor_unitario,
-                    compra.data_compra.strftime("%Y-%m-%d %H:%M:%S"),
-                ),
-            ),
-            (
-                "UPDATE estoque SET quantidade = ? WHERE id = ?",
-                (nova_qtd_estoque, compra.estoque_id),
-            ),
-        ]
-        ids = self.executar_transacao(operacoes)
-        novo_id = ids[0]  
-        return novo_id, compra.valor_unitario
+        diretorio_dados = Path(__file__).resolve().parent.parent.parent / "dados"
+        diretorio_dados.mkdir(parents=True, exist_ok=True)
+        self.caminho_banco = diretorio_dados / "sistema_loja.db"
 
-    def lancamento_compra_parcelada(self, nova_parcela: ContaPagar):
-        self.executar_insert(
-            """INSERT INTO contas_a_pagar (compra_id, parcela, valor_parcela, valor_pendente, data_vencimento)
-               VALUES (?, ?, ?, ?, ?)""",
-            (
-                nova_parcela.compra_id,
-                nova_parcela.parcela,
-                nova_parcela.valor_parcela,
-                nova_parcela.valor_pendente,
-                nova_parcela.data_vencimento,
-            ),
-        )
+    def _connect(self):
+        if self.is_postgres:
+            url = self.db_url.replace("postgres://", "postgresql://", 1)
+            return psycopg2.connect(url, cursor_factory=RealDictCursor)
 
-    def buscar_todos_apagar(self):
-        rows = self.executar_select("SELECT * FROM contas_a_pagar")
-        return [ContaPagar(**dict(row)) for row in rows]
+        conn = sqlite3.connect(self.caminho_banco)
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA foreign_keys = ON;")
+        return conn
+
+    def _adapt_query(self, query: str) -> str:
+        if self.is_postgres:
+            return query.replace("?", "%s")
+        return query
+
+    def _get_inserted_id(self, cursor, query: str):
+        match = re.search(r"insert\s+into\s+([a-zA-Z_][a-zA-Z0-9_]*)", query, re.IGNORECASE)
+        if not match:
+            return None
+
+        tabela = match.group(1).lower()
+
+        if self.is_postgres:
+            cursor.execute("SELECT CURRVAL(pg_get_serial_sequence(%s, 'id')) AS id", (tabela,))
+            resultado = cursor.fetchone()
+            return resultado["id"] if resultado else None
+
+        cursor.execute("SELECT last_insert_rowid() AS id")
+        resultado = cursor.fetchone()
+        return resultado["id"] if resultado else None
+
+    def executar_select(self, query: str, params=()):
+        conn = self._connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(self._adapt_query(query), params)
+            return cursor.fetchall()
+        finally:
+            cursor.close()
+            conn.close()
+
+    def executar_select_um(self, query: str, params=()):
+        conn = self._connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(self._adapt_query(query), params)
+            return cursor.fetchone()
+        finally:
+            cursor.close()
+            conn.close()
+
+    def executar_insert(self, query: str, params=()):
+        conn = self._connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(self._adapt_query(query), params)
+            insert_id = self._get_inserted_id(cursor, query)
+            conn.commit()
+            return insert_id
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            cursor.close()
+            conn.close()
+
+    def executar_transacao(self, operacoes):
+        conn = self._connect()
+        cursor = conn.cursor()
+        ids = []
+
+        try:
+            for query, params in operacoes:
+                cursor.execute(self._adapt_query(query), params)
+
+                if query.strip().lower().startswith("insert"):
+                    ids.append(self._get_inserted_id(cursor, query))
+
+            conn.commit()
+            return ids
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            cursor.close()
+            conn.close()

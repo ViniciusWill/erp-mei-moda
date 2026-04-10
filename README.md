@@ -1,8 +1,8 @@
 # Sistema ERP para Loja de Roupas
 
-Aplicacao web em Flask para controle operacional e financeiro de uma loja de roupas.
+Sistema web de gestao criado para ajudar microempreendedores a organizarem o dia a dia da loja de forma simples, visual e acessivel, mesmo sem familiaridade com tecnologia.
 
-O sistema cobre:
+O projeto foi pensado para substituir controles manuais, anotacoes soltas e planilhas dificeis de manter, reunindo em um so lugar processos essenciais como:
 - vendas
 - compras
 - estoque
@@ -12,14 +12,79 @@ O sistema cobre:
 - contas a receber
 - relatorios
 
-## Requisitos
+O objetivo principal e tornar a gestao mais acessivel para pequenos lojistas, oferecendo uma ferramenta clara para acompanhar a operacao e reduzir a dependencia de controles improvisados.
+
+## Para quem este projeto foi pensado
+
+Este sistema foi idealizado para microempreendedores que:
+- precisam controlar melhor a loja
+- nao tem facilidade com planilhas ou softwares complexos
+- querem visualizar operacoes de forma mais organizada
+- precisam de um sistema simples para acompanhar entradas, saidas e compromissos financeiros
+
+## Como um usuario final deveria usar este sistema
+
+Para o publico-alvo do projeto, a melhor forma de uso nao e instalar Python, abrir terminal ou configurar banco manualmente.
+
+O formato mais adequado para um microempreendedor comum e:
+- acessar o sistema por um link no navegador
+- usar a aplicacao ja hospedada
+- nao precisar instalar dependencias tecnicas
+- nao precisar configurar banco de dados localmente
+
+Em outras palavras: para um usuario final sem perfil tecnico, o ideal e que o sistema esteja publicado online ou empacotado de forma simples, e nao que ele precise rodar o projeto manualmente.
+
+### Demonstracao online
+
+O sistema ja pode ser acessado online em:
+
+[https://erp-mei.onrender.com/](https://erp-mei.onrender.com/)
+
+## O uso local esta complexo para um usuario comum?
+
+Sim. No estado atual do projeto, o fluxo local ainda e mais adequado para:
+- desenvolvedores
+- avaliadores tecnicos
+- testes de portifolio
+
+Hoje, para rodar localmente, e necessario:
+- instalar Python
+- instalar dependencias com `pip`
+- criar as tabelas do banco
+- popular dados iniciais
+- iniciar a aplicacao manualmente
+
+Isso nao e o fluxo ideal para o microempreendedor final.
+
+Por isso, a proposta mais coerente com o objetivo do projeto e:
+- disponibilizar o sistema online
+- ou futuramente empacotar uma versao mais simples para instalacao local
+
+## Sobre deploy e acesso web
+
+O projeto pode ser publicado em plataformas de hospedagem para que o usuario acesse tudo pelo navegador.
+
+No momento, uma alternativa pratica para portfolio e testes e o uso de plataformas como Render, porque elas permitem:
+- publicar a aplicacao web rapidamente
+- configurar variaveis de ambiente
+- conectar com banco externo
+- disponibilizar uma URL publica para demonstracao
+
+Isso nao substitui uma estrutura corporativa maior, mas e suficiente para demonstracao funcional, validacao de ideia e portfolio tecnico.
+
+Demonstracao publica atual:
+
+[https://erp-mei.onrender.com/](https://erp-mei.onrender.com/)
+
+## Requisitos para desenvolvimento local
+
 - Python 3.13 ou superior
 - `pip`
 
 Opcional:
 - PostgreSQL, se voce quiser rodar com banco externo
 
-## Como um usuario externo pode usar o sistema
+## Como rodar localmente para desenvolvimento ou avaliacao tecnica
 
 ### 1. Clonar o projeto
 ```bash
@@ -97,19 +162,17 @@ Esse script pode ser executado mais de uma vez sem duplicar os registros princip
 python run.py
 ```
 
-Por padrao, a aplicacao sobe em ambiente local com debug habilitado.
-
 Depois disso, acesse:
 
 `http://127.0.0.1:5000`
 
-## Fluxo recomendado para primeiro uso
+## Fluxo recomendado para primeiro teste
 
 Depois de abrir o sistema no navegador:
 
 1. Acesse a tela inicial
-2. Verifique se existem registros em Clientes e Participantes
-3. Verifique se existe ao menos um produto em Estoque
+2. Verifique os cadastros em Clientes e Participantes
+3. Verifique os produtos em Estoque
 4. Teste um lancamento em Vendas
 5. Teste um lancamento em Compras
 6. Consulte Contas a Pagar, Contas a Receber e Relatorios
@@ -117,8 +180,6 @@ Depois de abrir o sistema no navegador:
 Se voce executou `Tests/inserir_dados.py`, o sistema ja cria uma base minima para navegacao.
 
 ## Deploy
-
-O projeto pode ser publicado em plataformas como Render.
 
 Fluxo recomendado de deploy:
 
@@ -164,6 +225,7 @@ pytest Tests/test_post_routes.py -q -p no:cacheprovider
 - O projeto usa nomes de arquivos sensiveis a maiusculas/minusculas em ambiente Linux.
 - Em producao, nao exponha a `DATABASE_URL` em logs.
 - Para ambiente local, o SQLite e suficiente para avaliacao e testes iniciais.
+- Para o usuario final do projeto, o melhor formato de entrega e acesso via navegador, com a aplicacao ja publicada.
 
 ## Status atual
 

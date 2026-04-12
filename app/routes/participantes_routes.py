@@ -27,3 +27,21 @@ def participantes():
         partic=partic,
         total_partic=total_partic,
     )
+
+
+@participantes_bp.route("/participantes/<int:participante_id>", methods=["POST"])
+def excluir_participante(participante_id):
+    try:
+        ParticipanteService().excluir_participante(participante_id)
+        flash("Participante excluído com sucesso!", "sucesso")
+    except Exception as exc:
+        erro = str(exc)
+        if "foreign key" in erro.lower() or "fkey" in erro.lower():
+            flash(
+                "Este participante possui compras registradas. "
+                "Para excluí-lo, primeiro exclua as compras vinculadas a ele na tela de Relatórios.",
+                "erro"
+            )
+        else:
+            flash(f"Erro ao excluir participante: {exc}", "erro")
+    return redirect(url_for("participantes.participantes"))

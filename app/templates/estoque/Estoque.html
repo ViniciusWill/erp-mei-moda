@@ -42,6 +42,7 @@
         <table class="estoque-tabela" id="tabelaEstoque">
             <thead>
                 <tr>
+                    <th>Cod. Produto</th>
                     <th>Produto</th>
                     <th>Tamanho</th>
                     <th>Custo (R$)</th>
@@ -62,6 +63,7 @@
                         {% set status_label = 'Normal' %}
                     {% endif %}
                     <tr data-status="{{ status }}">
+                        <td class="col-codigo">{{ item.id }}</td>
                         <td class="col-produto">{{ item.nome_produto }}</td>
                         <td class="col-tamanho">{{ item.tamanho }}</td>
                         <td class="col-preco">{{ "%.2f"|format(item.valor_compra) }}</td>

@@ -10,11 +10,11 @@
 <body>
 
     <header id="cabecalho">
+
         <picture>
             <img class="logo-img" src="{{ url_for('static', filename=logo_header) }}" alt="Logo ERP">
         </picture>
     </header>
-
     <main class="main">
         {% block content %}{% endblock %}
     </main>

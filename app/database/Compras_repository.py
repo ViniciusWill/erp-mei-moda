@@ -1,3 +1,4 @@
+from datetime import datetime
 from .base_repository import BaseRepository
 from app.models.Compras_model import Compra, ContaPagar
 
@@ -45,5 +46,29 @@ class CompraRepository(BaseRepository):
         return [ContaPagar(**dict(row)) for row in rows]
 
     def selecionar_todas_compras(self):
-        rows = self.executar_select("SELECT * FROM compras ORDER BY data_compra DESC")
-        return [Compra(**dict(row)) for row in rows]
+        rows = self.executar_select("""
+            SELECT 
+            compras.id,
+            compras.fornecedor_id,
+            compras.estoque_id,
+            compras.quantidade,
+            compras.valor_unitario,
+            compras.data_compra,
+            estoque.nome_produto,
+            estoque.tamanho AS tamanho_produto,
+            participantes.nome AS nome_fornecedor
+        FROM compras
+        JOIN estoque ON compras.estoque_id = estoque.id
+        JOIN participantes ON compras.fornecedor_id = participantes.id
+    """)
+    
+        resultado = []
+        for row in rows:
+            r = dict(row)
+        if isinstance(r['data_compra'], str):
+            r['data_compra'] = datetime.strptime(r['data_compra'][:10], "%Y-%m-%d")
+        resultado.append(r)
+        return resultado
+    
+    def excluir_por_id(self, id: int):
+     self.executar_delete("DELETE FROM compras WHERE id = ?", (id,)) 

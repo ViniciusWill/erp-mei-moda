@@ -102,3 +102,15 @@ class BaseRepository:
         finally:
             cursor.close()
             conn.close()
+    def executar_delete(self, query: str, params=()):
+        conn = self._connect()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(self._adapt_query(query), params)
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            cursor.close()
+            conn.close()

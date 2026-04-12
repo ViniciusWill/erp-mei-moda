@@ -27,3 +27,20 @@ def clientes():
         cli=cli,
         total_cli=total_cli,
     )
+
+@clientes_bp.route("/clientes/<int:cliente_id>", methods=["POST"])
+def excluir_cliente(cliente_id):
+    try:
+        ClienteService().excluir_cliente(cliente_id)
+        flash("Cliente excluído com sucesso!", "sucesso")
+    except Exception as exc:
+        erro = str(exc)
+        if "foreign key" in erro.lower() or "fkey" in erro.lower():
+            flash(
+                "Este cliente possui vendas registradas. "
+                "Para excluí-lo, primeiro exclua as vendas vinculadas a ele na tela de Relatórios.",
+                "erro"
+            )
+        else:
+            flash(f"Erro ao excluir cliente: {exc}", "erro")
+    return redirect(url_for("clientes.clientes"))

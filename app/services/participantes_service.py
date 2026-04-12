@@ -9,3 +9,9 @@ class ParticipanteService:
     def lancamento_participante(self, nome: str):
         novo_participante = Participante(nome=nome)
         self.participante_repo.lancamento_participante(novo_participante)
+
+    def excluir_participante(self, participante_id: int):
+        participante = self.participante_repo.buscar_por_id(participante_id)
+        if not participante:
+            raise ValueError("Participante não encontrado.")
+        self.participante_repo.excluir(participante)

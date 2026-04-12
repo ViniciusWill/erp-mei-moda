@@ -12,3 +12,11 @@ class ParticipantesRepository(BaseRepository):
     def buscar_todos(self):
         rows = self.executar_select("SELECT * FROM Participantes")
         return [{"id": row["id"], "nome": row["nome"]} for row in rows]
+    def buscar_por_id(self, participante_id: int):
+        row = self.executar_select("SELECT * FROM participantes WHERE id = ?", (participante_id,))
+        if row:
+            return {"id": row[0]["id"], "nome": row[0]["nome"]}
+        return None
+
+    def excluir(self, participante):
+        self.executar_delete("DELETE FROM participantes WHERE id = ?", (participante["id"],))

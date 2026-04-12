@@ -1,3 +1,4 @@
+from datetime import datetime
 from .base_repository import BaseRepository
 from app.models.Vendas_model import Venda, ContaReceber
 
@@ -45,5 +46,28 @@ class VendaRepository(BaseRepository):
         return [ContaReceber(**dict(row)) for row in rows]
 
     def selecionar_todas_vendas(self):
-        rows = self.executar_select("SELECT * FROM vendas ORDER BY data_venda DESC")
-        return [Venda(**dict(row)) for row in rows]
+        rows = self.executar_select("""
+            SELECT 
+            vendas.id,
+            vendas.cliente_id,
+            vendas.estoque_id,
+            vendas.quantidade,
+            vendas.valor_unitario,
+            vendas.data_venda,
+            estoque.nome_produto,
+            estoque.tamanho AS tamanho_produto,
+            clientes.nome AS nome_cliente
+        FROM vendas
+        JOIN estoque ON vendas.estoque_id = estoque.id
+        JOIN clientes ON vendas.cliente_id = clientes.id
+    """)    
+        resultado = []
+        for row in rows:
+            r = dict(row)
+            if isinstance(r['data_venda'], str):
+                r['data_venda'] = datetime.strptime(r['data_venda'][:10], "%Y-%m-%d")
+            resultado.append(r)
+        return resultado
+    
+    def excluir_por_id(self, id: int):
+     self.executar_delete("DELETE FROM vendas WHERE id = ?", (id,)) 

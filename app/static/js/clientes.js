@@ -6,3 +6,11 @@ function excluir(id, nome) {
     document.body.appendChild(form);
     form.submit();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".btn-excluir-cliente").forEach((botao) => {
+        botao.addEventListener("click", () => {
+            excluir(botao.dataset.id, botao.dataset.nome);
+        });
+    });
+});

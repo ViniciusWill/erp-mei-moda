@@ -65,10 +65,13 @@ class CompraRepository(BaseRepository):
         resultado = []
         for row in rows:
             r = dict(row)
-        if isinstance(r['data_compra'], str):
-            r['data_compra'] = datetime.strptime(r['data_compra'][:10], "%Y-%m-%d")
-        resultado.append(r)
+            if isinstance(r["data_compra"], str):
+                r["data_compra"] = datetime.strptime(r["data_compra"][:10], "%Y-%m-%d")
+            resultado.append(r)
         return resultado
     
     def excluir_por_id(self, id: int):
-     self.executar_delete("DELETE FROM compras WHERE id = ?", (id,)) 
+        self.executar_transacao([
+            ("DELETE FROM contas_a_pagar WHERE compra_id = ?", (id,)),
+            ("DELETE FROM compras WHERE id = ?", (id,)),
+        ])

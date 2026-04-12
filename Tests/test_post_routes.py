@@ -8,6 +8,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app import create_app
+from app.database.Compras_repository import CompraRepository
+from app.database.Vendas_repository import VendaRepository
 from app.database.base_repository import BaseRepository
 
 
@@ -124,6 +126,14 @@ def fetch_one(db_path, query, params=()):
         conn.close()
 
 
+def fetch_all(db_path, query, params=()):
+    conn = sqlite3.connect(db_path)
+    try:
+        return conn.execute(query, params).fetchall()
+    finally:
+        conn.close()
+
+
 def test_post_vendas_persiste_registro_e_atualiza_estoque(client):
     test_client, db_path = client
 
@@ -186,3 +196,92 @@ def test_post_participantes_persiste_registro(client):
         ("Fornecedor Novo",),
     )
     assert participante == ("Fornecedor Novo",)
+
+
+def test_rotas_financeiras_renderizam_templates(client):
+    test_client, _ = client
+
+    contas_pagar = test_client.get("/financeiro/contas_pagar")
+    contas_receber = test_client.get("/financeiro/contas_receber")
+
+    assert contas_pagar.status_code == 200
+    assert contas_receber.status_code == 200
+
+
+def test_relatorio_de_compras_retorna_todos_os_registros(client):
+    _, db_path = client
+
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute(
+            """
+            INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (1, 1, 2, 25.5, "2026-04-12 09:00:00"),
+        )
+        conn.execute(
+            """
+            INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (1, 1, 4, 25.5, "2026-04-12 10:00:00"),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    compras = CompraRepository().selecionar_todas_compras()
+
+    assert len(compras) == 2
+    assert [compra["quantidade"] for compra in compras] == [2, 4]
+
+
+def test_excluir_compra_remove_parcelas_vinculadas(client):
+    test_client, db_path = client
+
+    response = test_client.post(
+        "/compras",
+        data={"fornecedor_id": "1", "estoque_id": "1", "quantidade": "3", "parcelas": "2"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 302
+
+    compra_id = fetch_one(db_path, "SELECT id FROM compras ORDER BY id DESC LIMIT 1")[0]
+    parcelas_antes = fetch_all(
+        db_path,
+        "SELECT id FROM contas_a_pagar WHERE compra_id = ?",
+        (compra_id,),
+    )
+    assert len(parcelas_antes) == 2
+
+    response = test_client.post(f"/relatorios/compra/{compra_id}", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert fetch_one(db_path, "SELECT id FROM compras WHERE id = ?", (compra_id,)) is None
+    assert fetch_all(db_path, "SELECT id FROM contas_a_pagar WHERE compra_id = ?", (compra_id,)) == []
+
+
+def test_excluir_venda_remove_parcelas_vinculadas(client):
+    test_client, db_path = client
+
+    response = test_client.post(
+        "/vendas",
+        data={"cliente_id": "1", "estoque_id": "1", "Quantidade-ven": "2", "parcelas": "2"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 302
+
+    venda_id = fetch_one(db_path, "SELECT id FROM vendas ORDER BY id DESC LIMIT 1")[0]
+    parcelas_antes = fetch_all(
+        db_path,
+        "SELECT id FROM contas_a_receber WHERE venda_id = ?",
+        (venda_id,),
+    )
+    assert len(parcelas_antes) == 2
+
+    response = test_client.post(f"/relatorios/venda/{venda_id}", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert fetch_one(db_path, "SELECT id FROM vendas WHERE id = ?", (venda_id,)) is None
+    assert fetch_all(db_path, "SELECT id FROM contas_a_receber WHERE venda_id = ?", (venda_id,)) == []

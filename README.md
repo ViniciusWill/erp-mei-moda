@@ -1,4 +1,6 @@
-# Sistema ERP para Loja de Roupas
+# ERP MEI Moda
+
+Versao 1.0 de um ERP web para lojas de roupas, pensado para ajudar microempreendedores a controlar vendas, compras, estoque e financeiro em um unico lugar.
 
 Sistema web de gestao criado para ajudar microempreendedores a organizarem o dia a dia da loja de forma simples, visual e acessivel, mesmo sem familiaridade com tecnologia.
 

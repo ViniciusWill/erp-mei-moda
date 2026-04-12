@@ -1,0 +1,182 @@
+#MeusRelatorios {
+    font-family: "Poppins", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 24px 28px 80px 28px;
+    color: rgb(0, 0, 0);
+}
+
+.relatorios-cards {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 28px;
+}
+
+.card-relatorio {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px 18px;
+    text-align: center;
+    flex: 1;
+}
+
+.card-relatorio--alerta {
+    border-color: rgb(28, 124, 226);
+    background-color: rgb(235, 245, 255);
+}
+
+.card-relatorio--alerta .card-relatorio-valor {
+    color: rgb(28, 124, 226);
+}
+
+.card-relatorio--danger {
+    border-color: rgb(76, 175, 80);
+    background-color: rgb(235, 255, 237);
+}
+
+.card-relatorio--danger .card-relatorio-valor {
+    color: rgb(76, 175, 80);
+}
+
+.card-relatorio-valor {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.card-relatorio-label {
+    display: block;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #555;
+    margin-top: 4px;
+}
+
+.relatorios-abas {
+    display: flex;
+    gap: 0;
+    margin-bottom: -1px;
+}
+
+.aba-btn {
+    padding: 8px 24px;
+    border: 1px solid black;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background-color: #f5f5f5;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.aba-btn.ativa {
+    background-color: #333;
+    color: #fff;
+}
+
+.aba-btn:hover:not(.ativa) {
+    opacity: 0.85;
+}
+
+.aba-painel {
+    display: none;
+}
+
+.aba-painel.ativa {
+    display: block;
+}
+
+.relatorios-controles {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    margin-top: 14px;
+}
+
+.relatorios-controles--topo {
+    padding: 10px 14px 0 14px;
+}
+
+.relatorios-busca {
+    flex: 1;
+    min-width: 220px;
+    padding: 6px 10px;
+    border: 1px solid black;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.relatorios-tabela-wrapper {
+    border: 1px solid black;
+    border-radius: 0 10px 10px 10px;
+    overflow: hidden;
+}
+
+.relatorios-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: inherit;
+    font-size: 0.875rem;
+}
+
+.relatorios-tabela thead {
+    background-color: #333;
+    color: #fff;
+}
+
+.relatorios-tabela th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.relatorios-tabela tbody tr {
+    border-bottom: 1px solid #ddd;
+    transition: opacity 0.15s;
+}
+
+.relatorios-tabela tbody tr:last-child {
+    border-bottom: none;
+}
+
+.relatorios-tabela tbody tr:hover {
+    opacity: 0.85;
+    background-color: #f5f5f5;
+}
+
+.relatorios-tabela tbody tr.linha-oculta {
+    display: none;
+}
+
+.relatorios-tabela td {
+    padding: 10px 14px;
+    vertical-align: middle;
+}
+
+.relatorios-rodape-info {
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: #555;
+    text-align: right;
+}
+
+@media (max-width: 600px) {
+    #MeusRelatorios {
+        padding: 14px 14px 80px 14px;
+    }
+
+    .relatorios-abas {
+        flex-wrap: wrap;
+    }
+}

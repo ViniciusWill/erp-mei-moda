@@ -33,10 +33,9 @@
         <button class="aba-btn" data-aba="compras">Compras</button>
     </div>
 
-    <!-- Painel Vendas -->
     <div id="aba-vendas" class="aba-painel ativa">
         <div class="relatorios-tabela-wrapper">
-            <div class="relatorios-controles" style="padding: 10px 14px 0 14px;">
+            <div class="relatorios-controles relatorios-controles--topo">
                 <input type="text" class="relatorios-busca" placeholder="Buscar venda..." data-tabela-alvo="tabelaVendas">
             </div>
             <table class="relatorios-tabela" id="tabelaVendas">
@@ -67,7 +66,7 @@
                         <td class="col-preco">{{ "%.2f"|format(v['valor_unitario'] * v['quantidade']) }}</td>
                         <td class="col-fornecedor">{{ v['data_venda'].strftime("%d/%m/%Y") }}</td>
                         <td>
-                            <button class="btn-excluir" onclick="excluirVenda({{ v['id'] }})">Excluir</button>
+                            <button class="btn-excluir btn-excluir-venda" data-id="{{ v['id'] }}">Excluir</button>
                         </td>
                     </tr>
                     {% else %}
@@ -81,10 +80,9 @@
         <div class="relatorios-rodape-info">{{ vendas | length }} registro(s)</div>
     </div>
 
-    <!-- Painel Compras -->
     <div id="aba-compras" class="aba-painel">
         <div class="relatorios-tabela-wrapper">
-            <div class="relatorios-controles" style="padding: 10px 14px 0 14px;">
+            <div class="relatorios-controles relatorios-controles--topo">
                 <input type="text" class="relatorios-busca" placeholder="Buscar compra..." data-tabela-alvo="tabelaCompras">
             </div>
             <table class="relatorios-tabela" id="tabelaCompras">
@@ -115,7 +113,7 @@
                         <td class="col-preco">{{ "%.2f"|format(c['valor_unitario'] * c['quantidade']) }}</td>
                         <td class="col-fornecedor">{{ c['data_compra'].strftime("%d/%m/%Y") }}</td>
                         <td>
-                            <button class="btn-excluir" onclick="excluirCompra({{ c['id'] }})">Excluir</button>
+                            <button class="btn-excluir btn-excluir-compra" data-id="{{ c['id'] }}">Excluir</button>
                         </td>
                     </tr>
                     {% else %}
@@ -131,23 +129,4 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
-<script>
-function excluirVenda(id) {
-    if (!confirm('Deseja excluir a venda #' + id + '?')) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/relatorios/venda/' + id;
-    document.body.appendChild(form);
-    form.submit();
-}
-
-function excluirCompra(id) {
-    if (!confirm('Deseja excluir a compra #' + id + '?')) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/relatorios/compra/' + id;
-    document.body.appendChild(form);
-    form.submit();
-}
-</script>
 {% endblock %}

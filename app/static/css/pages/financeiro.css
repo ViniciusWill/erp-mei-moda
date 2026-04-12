@@ -1,0 +1,17 @@
+.badge--pendente {
+    background-color: rgb(235, 245, 255);
+    color: rgb(20, 90, 180);
+    border-color: rgb(28, 124, 226);
+}
+
+.badge--vencida {
+    background-color: rgb(255, 243, 242);
+    color: rgb(200, 40, 30);
+    border-color: rgb(244, 67, 54);
+}
+
+.badge--paga {
+    background-color: rgb(232, 255, 237);
+    color: rgb(30, 130, 50);
+    border-color: rgb(76, 175, 80);
+}

@@ -35,11 +35,12 @@ def compras():
                     parcelas=parcelas,
                 )
 
-            flash("Compra lancada com sucesso!", "sucesso")
+            flash("Compra lançada com sucesso!", "sucesso")
             return redirect(url_for("compras.compras"))
         except Exception as exc:
-            flash(f"Erro ao lancar compra: {exc}", "erro")
+            flash(f"Erro ao lançar compra: {exc}", "erro")
 
+    produto_selecionado = request.args.get("produto_id", "")
     produtos = estoque_repo.buscar_todos()
     participantes = participantes_repo.buscar_todos()
     return render_template(
@@ -47,4 +48,33 @@ def compras():
         logo_header="imagens/compra.png",
         produtos=produtos,
         participantes=participantes,
+        produto_selecionado=produto_selecionado,
+    )
+
+
+@compras_bp.route("/compras/novo-produto", methods=["GET", "POST"])
+def novo_produto_compra():
+    if request.method == "POST":
+        try:
+            nome = request.form.get("nome", "").strip()
+            tamanho = request.form.get("tamanho", "").strip()
+            quantidade = int(request.form.get("quantidade", 0))
+            valor_unitario = float(request.form.get("valor_unitario", 0))
+
+            estoque_repo = EstoqueRepository()
+            novo_id = estoque_repo.inserir_produto(
+                nome=nome,
+                tamanho=tamanho,
+                quantidade=quantidade,
+                valor_unitario=valor_unitario,
+            )
+
+            flash(f'Produto "{nome}" cadastrado! Agora registre a compra.', "sucesso")
+            return redirect(url_for("compras.compras", produto_id=novo_id))
+        except Exception as exc:
+            flash(f"Erro ao cadastrar produto: {exc}", "erro")
+
+    return render_template(
+        "compras/NovoProduto.html",
+        logo_header="imagens/compra.png",
     )

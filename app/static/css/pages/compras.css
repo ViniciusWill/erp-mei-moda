@@ -1,0 +1,105 @@
+#Compras {
+    font-family: "Poppins", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 24px 28px 80px 28px;
+    color: rgb(0, 0, 0);
+}
+
+.compra-pergunta {
+    gap: 16px;
+    text-align: center;
+}
+
+.compra-pergunta__texto {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    justify-content: center;
+}
+
+.compra-pergunta__acoes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.compra-etapa-form {
+    display: none;
+}
+
+.compra-retorno,
+.compra-cancelar {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.compra-retorno__botao,
+.compra-cancelar__link {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.compra-cancelar__link {
+    display: inline-block;
+}
+
+.compra-novo-produto__titulo {
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    justify-content: center;
+}
+
+.btn-sim {
+    padding: 10px 20px;
+    border: 1px solid rgb(76, 175, 80);
+    border-radius: 6px;
+    background-color: transparent;
+    color: rgb(30, 130, 50);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    text-decoration: none;
+}
+
+.btn-sim:hover {
+    background-color: rgb(76, 175, 80);
+    color: #fff;
+}
+
+.btn-nao {
+    padding: 10px 20px;
+    border: 1px solid rgb(28, 124, 226);
+    border-radius: 6px;
+    background-color: transparent;
+    color: rgb(20, 90, 180);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-nao:hover {
+    background-color: rgb(28, 124, 226);
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    #Compras {
+        padding: 14px 14px 80px 14px;
+    }
+
+    .compra-pergunta__acoes {
+        flex-direction: column;
+    }
+}

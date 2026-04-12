@@ -1,0 +1,38 @@
+.alerta {
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    font-family: "Poppins", inherit;
+}
+
+.alerta-sucesso {
+    background-color: rgb(232, 255, 237);
+    color: rgb(30, 130, 50);
+    border: 1px solid rgb(76, 175, 80);
+}
+
+.alerta-erro {
+    background-color: rgb(255, 243, 242);
+    color: rgb(200, 40, 30);
+    border: 1px solid rgb(244, 67, 54);
+}
+
+.btn-excluir {
+    padding: 4px 12px;
+    border: 1px solid rgb(244, 67, 54);
+    border-radius: 6px;
+    background-color: transparent;
+    color: rgb(244, 67, 54);
+    font-family: "Poppins", inherit;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.btn-excluir:hover {
+    background-color: rgb(244, 67, 54);
+    color: #fff;
+}

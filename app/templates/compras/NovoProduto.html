@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Produto{% endblock %}
+
+{% block content %}
+<div id="Compras">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form class="formulario" action="{{ url_for('compras.novo_produto_compra') }}" method="POST">
+
+        <p class="compra-novo-produto__titulo">
+            Cadastrar novo produto no estoque
+        </p>
+
+        <p>
+            <label for="nome">Nome do produto:</label>
+            <input type="text" name="nome" id="nome" placeholder="Ex: Camiseta básica" required>
+        </p>
+
+        <p>
+            <label for="tamanho">Tamanho:</label>
+            <input type="text" name="tamanho" id="tamanho" placeholder="Ex: M, G, 42..." required>
+        </p>
+
+        <p>
+            <label for="quantidade">Quantidade inicial:</label>
+            <input type="number" name="quantidade" id="quantidade" min="0" value="0" required>
+        </p>
+
+        <p>
+            <label for="valor_unitario">Valor unitário (R$):</label>
+            <input type="number" name="valor_unitario" id="valor_unitario"
+                   step="0.01" min="0" placeholder="0.00" required>
+        </p>
+
+        <p>
+            <input type="submit" value="Salvar e continuar compra">
+        </p>
+
+    </form>
+
+    <div class="compra-cancelar">
+        <a href="{{ url_for('compras.compras') }}" class="compra-cancelar__link">
+            Cancelar e voltar
+        </a>
+    </div>
+</div>
+{% endblock %}

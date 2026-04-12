@@ -37,6 +37,18 @@ document.addEventListener("DOMContentLoaded", () => {
             filtrarTabelaRelatorios(campo.dataset.tabelaAlvo, campo.value);
         });
     });
+
+    document.querySelectorAll(".btn-excluir-venda").forEach((botao) => {
+        botao.addEventListener("click", () => {
+            excluirVenda(botao.dataset.id);
+        });
+    });
+
+    document.querySelectorAll(".btn-excluir-compra").forEach((botao) => {
+        botao.addEventListener("click", () => {
+            excluirCompra(botao.dataset.id);
+        });
+    });
 });
 
 function excluirVenda(id) {

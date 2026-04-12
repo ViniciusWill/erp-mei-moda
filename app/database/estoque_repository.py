@@ -30,3 +30,9 @@ class EstoqueRepository(BaseRepository):
                VALUES (?, ?, ?, ?)""",
             (estoque.nome_produto, estoque.tamanho, estoque.quantidade, estoque.valor_compra),
         )
+    def inserir_produto(self, nome: str, tamanho: str, quantidade: int, valor_unitario: float):
+        return self.executar_insert(
+        """INSERT INTO estoque (nome_produto, tamanho, quantidade, valor_compra)
+           VALUES (?, ?, ?, ?)""",
+        (nome, tamanho, quantidade, valor_unitario),
+    )

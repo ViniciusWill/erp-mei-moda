@@ -70,4 +70,7 @@ class VendaRepository(BaseRepository):
         return resultado
     
     def excluir_por_id(self, id: int):
-     self.executar_delete("DELETE FROM vendas WHERE id = ?", (id,)) 
+        self.executar_transacao([
+            ("DELETE FROM contas_a_receber WHERE venda_id = ?", (id,)),
+            ("DELETE FROM vendas WHERE id = ?", (id,)),
+        ])

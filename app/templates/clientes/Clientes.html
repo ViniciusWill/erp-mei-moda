@@ -28,7 +28,7 @@
                     <td class="col-produto">{{ c.id }}</td>
                     <td class="col-produto">{{ c.nome }}</td>
                     <td>
-                        <button class="btn-excluir" onclick='excluir({{ c.id }}, "{{ c.nome }}")'>Excluir</button>
+                        <button class="btn-excluir btn-excluir-cliente" data-id="{{ c.id }}" data-nome="{{ c.nome }}">Excluir</button>
                     </td>
                 </tr>
                 {% else %}

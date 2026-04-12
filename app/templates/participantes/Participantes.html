@@ -50,15 +50,5 @@
         </p>
     </form>
 </div>
-
-<script>
-function excluir(id, nome) {
-    if (!confirm('Deseja excluir o participante "' + nome + '"?')) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/participantes/' + id;
-    document.body.appendChild(form);
-    form.submit();
-}
-</script>
+<script src="{{ url_for('static', filename='js/participantes.js') }}"></script>
 {% endblock %}

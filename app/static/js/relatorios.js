@@ -38,3 +38,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+function excluirVenda(id) {
+    if (!confirm('Deseja excluir a venda #' + id + '?')) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/relatorios/venda/' + id;
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function excluirCompra(id) {
+    if (!confirm('Deseja excluir a compra #' + id + '?')) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/relatorios/compra/' + id;
+    document.body.appendChild(form);
+    form.submit();
+}

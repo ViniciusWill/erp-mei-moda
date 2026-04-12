@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Participantes{% endblock %}
+
+{% block content %}
+<div id="Participantes">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="estoque-tabela-wrapper">
+        <table class="estoque-tabela" id="tabelaParticipantes">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in partic %}
+                <tr>
+                    <td class="col-produto">{{ p.id }}</td>
+                    <td class="col-produto">{{ p.nome }}</td>
+                    <td>
+                        <button class="btn-excluir btn-excluir-participante" data-id="{{ p.id }}" data-nome="{{ p.nome }}">Excluir</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="tabela-vazia">Nenhum participante cadastrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <form class="formulario" action="{{ url_for('participantes.participantes') }}" method="POST">
+        <p>
+            <label for="nome">Nome do participante</label>
+            <input type="text" name="nome" id="nome" placeholder="Nome do participante" required>
+        </p>
+        <p>
+            <input type="submit" value="Cadastrar novo Participante">
+        </p>
+    </form>
+</div>
+<script src="{{ url_for('static', filename='js/participantes.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+@import url("shared/base.css");
+@import url("shared/forms.css");
+@import url("shared/feedback.css");
+@import url("shared/tables.css");
+
+@import url("pages/home.css");
+@import url("pages/vendas.css");
+@import url("pages/compras.css");
+@import url("pages/cadastros.css");
+@import url("pages/estoque.css");
+@import url("pages/financeiro.css");
+@import url("pages/relatorios.css");

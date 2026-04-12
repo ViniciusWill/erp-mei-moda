@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Relatórios{% endblock %}
+
+{% block content %}
+<div id="MeusRelatorios">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="relatorios-cards">
+        <div class="card-relatorio">
+            <span class="card-relatorio-valor">{{ total_vendas }}</span>
+            <span class="card-relatorio-label">Total de Vendas</span>
+        </div>
+        <div class="card-relatorio card-relatorio--alerta">
+            <span class="card-relatorio-valor">{{ total_compras }}</span>
+            <span class="card-relatorio-label">Total de Compras</span>
+        </div>
+        <div class="card-relatorio card-relatorio--danger">
+            <span class="card-relatorio-valor">R$ {{ "%.2f"|format(faturamento_total) }}</span>
+            <span class="card-relatorio-label">Faturamento Total</span>
+        </div>
+    </div>
+
+    <div class="relatorios-abas">
+        <button class="aba-btn ativa" data-aba="vendas">Vendas</button>
+        <button class="aba-btn" data-aba="compras">Compras</button>
+    </div>
+
+    <div id="aba-vendas" class="aba-painel ativa">
+        <div class="relatorios-tabela-wrapper">
+            <div class="relatorios-controles relatorios-controles--topo">
+                <input type="text" class="relatorios-busca" placeholder="Buscar venda..." data-tabela-alvo="tabelaVendas">
+            </div>
+            <table class="relatorios-tabela" id="tabelaVendas">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Cód. Produto</th>
+                        <th>Nome do Produto</th>
+                        <th>Tamanho</th>
+                        <th>Qtd.</th>
+                        <th>Valor Unit. (R$)</th>
+                        <th>Total (R$)</th>
+                        <th>Data</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vendas %}
+                    <tr>
+                        <td class="col-fornecedor">{{ v['id'] }}</td>
+                        <td class="col-produto">{{ v['nome_cliente'] }}</td>
+                        <td class="col-fornecedor">{{ v['estoque_id'] }}</td>
+                        <td class="col-produto">{{ v['nome_produto'] }}</td>
+                        <td class="col-produto">{{ v['tamanho_produto'] }}</td>
+                        <td class="col-qtd">{{ v['quantidade'] }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(v['valor_unitario']) }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(v['valor_unitario'] * v['quantidade']) }}</td>
+                        <td class="col-fornecedor">{{ v['data_venda'].strftime("%d/%m/%Y") }}</td>
+                        <td>
+                            <button class="btn-excluir btn-excluir-venda" data-id="{{ v['id'] }}">Excluir</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="tabela-vazia">Nenhuma venda registrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="relatorios-rodape-info">{{ vendas | length }} registro(s)</div>
+    </div>
+
+    <div id="aba-compras" class="aba-painel">
+        <div class="relatorios-tabela-wrapper">
+            <div class="relatorios-controles relatorios-controles--topo">
+                <input type="text" class="relatorios-busca" placeholder="Buscar compra..." data-tabela-alvo="tabelaCompras">
+            </div>
+            <table class="relatorios-tabela" id="tabelaCompras">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fornecedor</th>
+                        <th>Cód. Produto</th>
+                        <th>Nome do Produto</th>
+                        <th>Tamanho</th>
+                        <th>Qtd.</th>
+                        <th>Valor Unit. (R$)</th>
+                        <th>Total (R$)</th>
+                        <th>Data</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in compras %}
+                    <tr>
+                        <td class="col-fornecedor">{{ c['id'] }}</td>
+                        <td class="col-produto">{{ c['nome_fornecedor'] }}</td>
+                        <td class="col-fornecedor">{{ c['estoque_id'] }}</td>
+                        <td class="col-produto">{{ c['nome_produto'] }}</td>
+                        <td class="col-produto">{{ c['tamanho_produto'] }}</td>
+                        <td class="col-qtd">{{ c['quantidade'] }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(c['valor_unitario']) }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(c['valor_unitario'] * c['quantidade']) }}</td>
+                        <td class="col-fornecedor">{{ c['data_compra'].strftime("%d/%m/%Y") }}</td>
+                        <td>
+                            <button class="btn-excluir btn-excluir-compra" data-id="{{ c['id'] }}">Excluir</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="tabela-vazia">Nenhuma compra registrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="relatorios-rodape-info">{{ compras | length }} registro(s)</div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
+{% endblock %}

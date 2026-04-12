@@ -16,6 +16,12 @@ __pycache__/
 *$py.class
 venv/
 .env
+.pytest_cache/
+Tests/.tmp/
 
 # --- VS Code ---
 .vscode/
+*.code-workspace
+
+
+

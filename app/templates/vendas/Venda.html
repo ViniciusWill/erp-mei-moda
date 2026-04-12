@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Nova Venda{% endblock %}
+
+{% block content %}
+<div id="Vendas">
+    <form class="formulario" action="{{ url_for('vendas.vendas') }}" method="POST">
+     <p>
+          <label for="cliente_id">Cliente:</label>
+            <select name="cliente_id" id="cliente_id" required>
+                <option value="">Selecione</option>
+                {% for c in clientes %}
+                    <option value="{{ c.id }}">{{ c.nome }}</option>
+                {% endfor %}
+            </select>
+    </p>
+     <p>
+        <label for ="estoque_id">Codigo do Produto: </label> 
+            <select name="estoque_id" id="estoque_id" required>
+                <option value="">Selecione</option>
+                {% for p in produtos %}
+                    <option value="{{ p.id }}">{{ p.id }}</option>
+                {% endfor %}
+            </select>
+    </p>    
+    <p>
+        <label for ="Quantidade-ven">Quantidade: </label>
+            <input type="number" name="Quantidade-ven" id="qntven" min="1" required>
+    </p>
+    <p>
+        <label for="parcelas">Parcelas: </label> 
+            <input type="number" name="parcelas" id="parcelas" min="1" required>
+    </p>
+    <p>
+            <input type="submit" value="Registrar Venda">
+    </p>
+    </form>
+</div>
+{% endblock %}

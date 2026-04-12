@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Estoque{% endblock %}
+
+{% block content %}
+
+<div id="MeuEstoque">
+
+    <div class="estoque-header">
+        <div class="estoque-cards">
+            <div class="card-stat">
+                <span class="card-stat-valor">{{ total_itens }}</span>
+                <span class="card-stat-label">Produtos Cadastrados</span>
+            </div>
+            <div class="card-stat card-stat--alerta">
+                <span class="card-stat-valor">{{ estoque_baixo }}</span>
+                <span class="card-stat-label">Estoque Baixo</span>
+            </div>
+            <div class="card-stat card-stat--danger">
+                <span class="card-stat-valor">{{ estoque_zerado }}</span>
+                <span class="card-stat-label">Sem Estoque</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="estoque-controles">
+        <input
+            type="text"
+            id="campoBusca"
+            class="estoque-busca"
+            placeholder="Buscar produto ou fornecedor..."
+        >
+        <select id="filtroStatus" class="estoque-select">
+            <option value="">Todos os status</option>
+            <option value="ok">Normal</option>
+            <option value="baixo">Baixo</option>
+            <option value="zerado">Zerado</option>
+        </select>
+    </div>
+
+    <div class="estoque-tabela-wrapper">
+        <table class="estoque-tabela" id="tabelaEstoque">
+            <thead>
+                <tr>
+                    <th>Cod. Produto</th>
+                    <th>Produto</th>
+                    <th>Tamanho</th>
+                    <th>Custo (R$)</th>
+                    <th>Qtd.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in produtos %}
+                    {% if item.quantidade <= 0 %}
+                        {% set status = 'zerado' %}
+                        {% set status_label = 'Zerado' %}
+                    {% elif item.quantidade <= 5 %}
+                        {% set status = 'baixo' %}
+                        {% set status_label = 'Baixo' %}
+                    {% else %}
+                        {% set status = 'ok' %}
+                        {% set status_label = 'Normal' %}
+                    {% endif %}
+                    <tr data-status="{{ status }}">
+                        <td class="col-codigo">{{ item.id }}</td>
+                        <td class="col-produto">{{ item.nome_produto }}</td>
+                        <td class="col-tamanho">{{ item.tamanho }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(item.valor_compra) }}</td>
+                        <td class="col-qtd {% if item.quantidade <= 0 %}qtd-zerado{% elif item.quantidade <= 5 %}qtd-baixo{% endif %}">
+                            {{ item.quantidade }}
+                        </td>
+                        <td>
+                            <span class="badge badge--{{ status }}">{{ status_label }}</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="tabela-vazia">Nenhum produto encontrado no estoque.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="estoque-rodape-info">
+        Exibindo <span id="contadorVisiveis">{{ produtos | length }}</span> de {{ produtos | length }} itens
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/estoque.js') }}"></script>
+
+{% endblock %}

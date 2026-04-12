@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+ 
+{% block title %}Contas a Receber{% endblock %}
+ 
+{% block content %}
+ 
+<div id="MeuEstoque">
+ 
+    <div class="estoque-header">
+        <div class="estoque-cards">
+            <div class="card-stat">
+                <span class="card-stat-valor">{{ total_contas }}</span>
+                <span class="card-stat-label">Total de Parcelas</span>
+            </div>
+            <div class="card-stat card-stat--alerta">
+                <span class="card-stat-valor">R$ {{ "%.2f"|format(total_pendente) }}</span>
+                <span class="card-stat-label">Total Pendente</span>
+            </div>
+            <div class="card-stat card-stat--danger">
+                <span class="card-stat-valor">{{ total_vencidas }}</span>
+                <span class="card-stat-label">Vencidas</span>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="estoque-controles">
+        <input
+            type="text"
+            id="campoBusca"
+            class="estoque-busca"
+            placeholder="Buscar por compra ou parcela..."
+        >
+        <select id="filtroStatus" class="estoque-select">
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="vencida">Vencida</option>
+            <option value="paga">Paga</option>
+        </select>
+    </div>
+ 
+    <div class="estoque-tabela-wrapper">
+        <table class="estoque-tabela" id="tabelaContas">
+            <thead>
+                <tr>
+                    <th>Venda ID</th>
+                    <th>Parcela</th>
+                    <th>Valor Parcela (R$)</th>
+                    <th>Valor Pendente (R$)</th>
+                    <th>Vencimento</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conta in contas %}
+                    {% if conta.valor_pendente <= 0 %}
+                        {% set status = 'paga' %}
+                        {% set status_label = 'Paga' %}
+                    {% elif conta.data_vencimento < hoje %}
+                        {% set status = 'vencida' %}
+                        {% set status_label = 'Vencida' %}
+                    {% else %}
+                        {% set status = 'pendente' %}
+                        {% set status_label = 'Pendente' %}
+                    {% endif %}
+                    <tr data-status="{{ status }}">
+                        <td class="col-produto">{{ conta.venda_id }}</td>
+                        <td class="col-tamanho">{{ conta.parcela }}</td>
+                        <td class="col-preco">{{ "%.2f"|format(conta.valor_parcela) }}</td>
+                        <td class="col-preco {% if conta.valor_pendente > 0 %}qtd-baixo{% endif %}">
+                            {{ "%.2f"|format(conta.valor_pendente) }}
+                        </td>
+                        <td class="col-produto">{{ conta.data_vencimento.strftime('%d/%m/%Y') }}</td>
+                        <td>
+                            <span class="badge badge--{{ status }}">{{ status_label }}</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="tabela-vazia">Nenhuma conta a receber encontrada.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+ 
+    <div class="estoque-rodape-info">
+        Exibindo <span id="contadorVisiveis">{{ contas | length }}</span> de {{ contas | length }} parcelas
+    </div>
+ 
+</div>
+ 
+<script src="{{ url_for('static', filename='js/contas_receber.js') }}"></script>
+ 
+{% endblock %}

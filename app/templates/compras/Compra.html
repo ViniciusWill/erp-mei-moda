@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Nova Compra{% endblock %}
+
+{% block content %}
+<div id="Compras" data-produto-selecionado="{{ produto_selecionado }}">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div id="passo-pergunta" class="formulario compra-pergunta">
+        <p class="compra-pergunta__texto">
+            O produto que voc&ecirc; vai comprar j&aacute; est&aacute; cadastrado no estoque?
+        </p>
+        <div class="compra-pergunta__acoes">
+            <button type="button" class="btn-sim js-mostrar-form-compra">
+                Sim
+            </button>
+            <a href="{{ url_for('compras.novo_produto_compra') }}" class="btn-nao">
+                N&atilde;o
+            </a>
+        </div>
+    </div>
+
+    <div id="passo-form" class="compra-etapa-form">
+        <form class="formulario" action="{{ url_for('compras.compras') }}" method="POST">
+
+            <p>
+                <label for="fornecedor_id">Participante:</label>
+                <select name="fornecedor_id" id="fornecedor_id" required>
+                    <option value="">Selecione</option>
+                    {% for p in participantes %}
+                        <option value="{{ p.id }}">{{ p.nome }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="estoque_id">Produto:</label>
+                <select name="estoque_id" id="estoque_id" required>
+                    <option value="">Selecione</option>
+                    {% for produto in produtos %}
+                        <option value="{{ produto.id }}"
+                            {% if produto_selecionado and produto.id | string == produto_selecionado %}
+                                selected
+                            {% endif %}>
+                            {{ produto.nome_produto }} - {{ produto.tamanho }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="qntcom">Quantidade:</label>
+                <input type="number" name="quantidade" id="qntcom" min="1" required>
+            </p>
+
+            <p>
+                <label for="parcelas">Parcelas:</label>
+                <input type="number" name="parcelas" id="parcelas" min="1" value="1" required>
+            </p>
+
+            <p>
+                <input type="submit" value="Registrar Compra">
+            </p>
+
+        </form>
+
+        <div class="compra-retorno">
+            <button type="button" class="compra-retorno__botao js-voltar-pergunta-compra">
+                Voltar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/compras.js') }}"></script>
+{% endblock %}

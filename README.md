@@ -38,8 +38,6 @@ Em outras palavras: para um usuario final sem perfil tecnico, o ideal e que o si
 
 ### Demonstracao online
 
-O sistema ja pode ser acessado online em:
-
 [https://erp-mei.onrender.com/](https://erp-mei.onrender.com/)
 
 ## O uso local esta complexo para um usuario comum?
@@ -73,10 +71,6 @@ No momento, uma alternativa pratica para portfolio e testes e o uso de plataform
 - disponibilizar uma URL publica para demonstracao
 
 Isso nao substitui uma estrutura corporativa maior, mas e suficiente para demonstracao funcional, validacao de ideia e portfolio tecnico.
-
-Demonstracao publica atual:
-
-[https://erp-mei.onrender.com/](https://erp-mei.onrender.com/)
 
 ## Requisitos para desenvolvimento local
 

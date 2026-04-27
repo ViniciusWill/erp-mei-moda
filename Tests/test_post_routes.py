@@ -17,7 +17,8 @@ SCHEMA = [
     """
     CREATE TABLE clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE
+        nome TEXT NOT NULL UNIQUE,
+        cpf VARCHAR(11)
     )
     """,
     """
@@ -33,7 +34,8 @@ SCHEMA = [
     """
     CREATE TABLE Participantes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE
+        nome TEXT NOT NULL UNIQUE,
+        Cnpj VARCHAR(14)
     )
     """,
     """
@@ -97,12 +99,12 @@ def client(monkeypatch):
         for statement in SCHEMA:
             conn.execute(statement)
 
-        conn.execute("INSERT INTO clientes (nome) VALUES (?)", ("Cliente Base",))
+        conn.execute("INSERT INTO clientes (nome, cpf) VALUES (?, ?)", ("Cliente Base", "12345678901"))
         conn.execute(
             "INSERT INTO estoque (nome_produto, tamanho, quantidade, valor_compra) VALUES (?, ?, ?, ?)",
             ("Camiseta Polo", "G", 10, 25.50),
         )
-        conn.execute("INSERT INTO Participantes (nome) VALUES (?)", ("Fornecedor Base",))
+        conn.execute("INSERT INTO Participantes (nome, Cnpj) VALUES (?, ?)", ("Fornecedor Base", "12345678000199"))
         conn.commit()
     finally:
         conn.close()
@@ -170,7 +172,7 @@ def test_post_clientes_persiste_registro(client):
     test_client, db_path = client
 
     response = test_client.post(
-        "/clientes",
+        "/clientes/novo",
         data={"nome": "Cliente Novo"},
         follow_redirects=False,
     )
@@ -184,7 +186,7 @@ def test_post_participantes_persiste_registro(client):
     test_client, db_path = client
 
     response = test_client.post(
-        "/participantes",
+        "/participantes/novo",
         data={"nome": "Fornecedor Novo"},
         follow_redirects=False,
     )
@@ -196,6 +198,42 @@ def test_post_participantes_persiste_registro(client):
         ("Fornecedor Novo",),
     )
     assert participante == ("Fornecedor Novo",)
+
+
+def test_post_novo_cliente_venda_persiste_cpf(client):
+    test_client, db_path = client
+
+    response = test_client.post(
+        "/vendas/novo-cliente",
+        data={"nome": "Cliente Venda", "cpf": "98765432100"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    cliente = fetch_one(
+        db_path,
+        "SELECT nome, cpf FROM clientes WHERE nome = ?",
+        ("Cliente Venda",),
+    )
+    assert cliente == ("Cliente Venda", "98765432100")
+
+
+def test_post_novo_fornecedor_compra_persiste_cnpj(client):
+    test_client, db_path = client
+
+    response = test_client.post(
+        "/compras/novo-fornecedor?produto_id=1",
+        data={"nome": "Fornecedor Compra", "cnpj": "11222333000144"},
+        follow_redirects=False,
+    )
+
+    assert response.status_code == 302
+    fornecedor = fetch_one(
+        db_path,
+        "SELECT nome, Cnpj FROM Participantes WHERE nome = ?",
+        ("Fornecedor Compra",),
+    )
+    assert fornecedor == ("Fornecedor Compra", "11222333000144")
 
 
 def test_rotas_financeiras_renderizam_templates(client):

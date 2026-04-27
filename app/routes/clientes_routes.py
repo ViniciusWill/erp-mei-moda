@@ -7,8 +7,21 @@ from app.services.clientes_service import ClienteService
 clientes_bp = Blueprint("clientes", __name__)
 
 
-@clientes_bp.route("/clientes", methods=["GET", "POST"])
+@clientes_bp.route("/clientes", methods=["GET"])
 def clientes():
+    clientes_repo = ClienteRepository()
+    cli = clientes_repo.buscar_todos()
+    total_cli = len(cli)
+    return render_template(
+        "clientes/Clientes.html",
+        logo_header="imagens/Clientes.png",
+        cli=cli,
+        total_cli=total_cli,
+    )
+
+
+@clientes_bp.route("/clientes/novo", methods=["GET", "POST"])
+def novo_cliente():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
@@ -18,14 +31,9 @@ def clientes():
         except Exception as exc:
             flash(f"Erro ao cadastrar cliente: {exc}", "erro")
 
-    clientes_repo = ClienteRepository()
-    cli = clientes_repo.buscar_todos()
-    total_cli = len(cli)
     return render_template(
-        "clientes/Clientes.html",
+        "clientes/NovoCliente.html",
         logo_header="imagens/Clientes.png",
-        cli=cli,
-        total_cli=total_cli,
     )
 
 @clientes_bp.route("/clientes/<int:cliente_id>", methods=["POST"])

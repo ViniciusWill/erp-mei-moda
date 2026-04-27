@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+<div id="Vendas">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form class="formulario" action="{{ url_for('vendas.novo_cliente_venda') }}" method="POST">
+
+        <p class="pergunta-novo__titulo">
+            Cadastrar novo cliente
+        </p>
+
+        <p class="form-aviso">
+            Revise os dados antes de salvar. O nome deve ter pelo menos 2 caracteres e o CPF precisa conter exatamente 11 numeros.
+        </p>
+
+        <p>
+            <label for="nome">Nome do cliente:</label>
+            <input type="text" name="nome" id="nome" placeholder="Ex: Joao da Silva" minlength="2" maxlength="120" required>
+        </p>
+        <p class="campo-aviso">Use o nome completo ou uma identificacao clara do cliente.</p>
+
+        <p>
+            <label for="cpf">CPF:</label>
+            <input type="text" name="cpf" id="cpf" placeholder="Ex: 12345678900" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" title="Informe exatamente 11 numeros." required>
+        </p>
+        <p class="campo-aviso">Digite apenas numeros, sem pontos ou tracos.</p>
+
+        <p>
+            <input type="submit" value="Salvar e continuar venda">
+        </p>
+
+    </form>
+
+    <div class="pergunta-retorno">
+        <a href="{{ url_for('vendas.vendas') }}" class="pergunta-cancelar__link">
+            Cancelar e voltar
+        </a>
+    </div>
+</div>
+{% endblock %}

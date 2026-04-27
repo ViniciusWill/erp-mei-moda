@@ -13,6 +13,12 @@
         {% endif %}
     {% endwith %}
 
+    <div class="cadastro-atalho">
+        <a href="{{ url_for('participantes.novo_participante') }}" class="btn-nao">
+            Cadastrar Participante
+        </a>
+    </div>
+
     <div class="estoque-tabela-wrapper">
         <table class="estoque-tabela" id="tabelaParticipantes">
             <thead>
@@ -39,16 +45,6 @@
             </tbody>
         </table>
     </div>
-
-    <form class="formulario" action="{{ url_for('participantes.participantes') }}" method="POST">
-        <p>
-            <label for="nome">Nome do participante</label>
-            <input type="text" name="nome" id="nome" placeholder="Nome do participante" required>
-        </p>
-        <p>
-            <input type="submit" value="Cadastrar novo Participante">
-        </p>
-    </form>
 </div>
 <script src="{{ url_for('static', filename='js/participantes.js') }}"></script>
 {% endblock %}

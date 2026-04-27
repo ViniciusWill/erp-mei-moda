@@ -1,0 +1,31 @@
+[1mdiff --git a/run.py b/run.py[m
+[1mindex 984f364..b5b132a 100644[m
+[1m--- a/run.py[m
+[1m+++ b/run.py[m
+[36m@@ -1,11 +1,19 @@[m
+[31m-from dotenv import load_dotenv[m
+[31m-import os[m
+[32m+[m[32mfrom flask import Flask[m
+[32m+[m[32mfrom app.database.setup_db import criar_banco[m
+[32m+[m[32mfrom app.routes import register_blueprints[m
+ [m
+ [m
+[31m-load_dotenv()[m
+[31m-from app import create_app[m
+[32m+[m[32mdef create_app():[m
+[32m+[m[32m    criar_banco()[m
+[32m+[m
+[32m+[m[32m    app = Flask(__name__)[m
+[32m+[m[32m    app.secret_key = "loja-roupa-key"[m
+[32m+[m
+[32m+[m[32m    register_blueprints(app)[m
+[32m+[m
+[32m+[m[32m    return app[m
+ [m
+[31m-app = create_app()[m
+ [m
+ if __name__ == "__main__":[m
+[31m-    app.run(debug=True)[m
+[32m+[m[32m    app = create_app()[m
+[32m+[m[32m    app.run(debug=True)[m
+\ No newline at end of file[m

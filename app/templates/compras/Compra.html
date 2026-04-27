@@ -3,7 +3,11 @@
 {% block title %}Nova Compra{% endblock %}
 
 {% block content %}
-<div id="Compras" data-produto-selecionado="{{ produto_selecionado }}">
+<div
+    id="Compras"
+    data-produto-selecionado="{{ produto_selecionado }}"
+    data-fornecedor-selecionado="{{ fornecedor_selecionado }}"
+>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -13,11 +17,11 @@
         {% endif %}
     {% endwith %}
 
-    <div id="passo-pergunta" class="formulario compra-pergunta">
-        <p class="compra-pergunta__texto">
+    <div id="passo-pergunta-produto" class="formulario pergunta">
+        <p class="pergunta__texto">
             O produto que voc&ecirc; vai comprar j&aacute; est&aacute; cadastrado no estoque?
         </p>
-        <div class="compra-pergunta__acoes">
+        <div class="pergunta__acoes">
             <button type="button" class="btn-sim js-mostrar-form-compra">
                 Sim
             </button>
@@ -27,18 +31,46 @@
         </div>
     </div>
 
-    <div id="passo-form" class="compra-etapa-form">
+    <div id="passo-pergunta-fornecedor" class="formulario pergunta" style="display: none;">
+        <p class="pergunta__texto">
+            O fornecedor que voc&ecirc; vai comprar j&aacute; est&aacute; cadastrado no sistema?
+        </p>
+        <div class="pergunta__acoes">
+            <button type="button" class="btn-sim js-mostrar-form-fornecedor">
+                Sim
+            </button>
+            <a
+                href="{{ url_for('compras.novo_fornecedor_compra', produto_id=produto_selecionado) }}"
+                class="btn-nao"
+            >
+                N&atilde;o
+            </a>
+        </div>
+    </div>
+
+    <div id="passo-form" class="etapa-form" style="display: none;">
         <form class="formulario" action="{{ url_for('compras.compras') }}" method="POST">
+            <p class="form-aviso">
+                Revise os dados antes de registrar. Selecione um fornecedor e um produto validos. Quantidade e parcelas devem ser maiores que zero.
+            </p>
 
             <p>
                 <label for="fornecedor_id">Participante:</label>
                 <select name="fornecedor_id" id="fornecedor_id" required>
                     <option value="">Selecione</option>
                     {% for p in participantes %}
-                        <option value="{{ p.id }}">{{ p.nome }}</option>
+                        <option
+                            value="{{ p.id }}"
+                            {% if fornecedor_selecionado and p.id | string == fornecedor_selecionado %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ p.nome }}
+                        </option>
                     {% endfor %}
                 </select>
             </p>
+            <p class="campo-aviso">Escolha um fornecedor ja cadastrado no sistema.</p>
 
             <p>
                 <label for="estoque_id">Produto:</label>
@@ -54,28 +86,25 @@
                     {% endfor %}
                 </select>
             </p>
+            <p class="campo-aviso">Escolha o produto correto para evitar lancamento no item errado.</p>
 
             <p>
                 <label for="qntcom">Quantidade:</label>
-                <input type="number" name="quantidade" id="qntcom" min="1" required>
+                <input type="number" name="quantidade" id="qntcom" min="1" step="1" required>
             </p>
+            <p class="campo-aviso">Informe uma quantidade inteira maior que zero.</p>
 
             <p>
                 <label for="parcelas">Parcelas:</label>
-                <input type="number" name="parcelas" id="parcelas" min="1" value="1" required>
+                <input type="number" name="parcelas" id="parcelas" min="1" step="1" value="1" required>
             </p>
+            <p class="campo-aviso">Use 1 para compra a vista ou um numero inteiro maior para parcelamento.</p>
 
             <p>
                 <input type="submit" value="Registrar Compra">
             </p>
 
         </form>
-
-        <div class="compra-retorno">
-            <button type="button" class="compra-retorno__botao js-voltar-pergunta-compra">
-                Voltar
-            </button>
-        </div>
     </div>
 </div>
 

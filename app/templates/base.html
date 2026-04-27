@@ -31,7 +31,7 @@
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'vendas.vendas' %}
+            {% if request.endpoint not in ['vendas.vendas', 'vendas.novo_cliente_venda'] %}
             <a href="{{ url_for('vendas.vendas') }}" title="Vendas"> 
                 <div class="icones-interativos" id="venda">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/venda.png') }}">
@@ -39,7 +39,7 @@
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'compras.compras' %}
+            {% if request.endpoint not in ['compras.compras', 'compras.novo_produto_compra', 'compras.novo_fornecedor_compra'] %}
             <a href="{{ url_for('compras.compras') }}" title="Compras">
                 <div class="icones-interativos" id="compra">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/compra.png') }}">
@@ -70,7 +70,7 @@
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'clientes.clientes' %}
+            {% if request.endpoint not in ['clientes.clientes', 'clientes.novo_cliente'] %}
             <a href="{{ url_for('clientes.clientes') }}" title="Clientes">
                 <div class="icones-interativos" id="clientes">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Clientes.png') }}">
@@ -78,7 +78,7 @@
             </a>
             {% endif %}
 
-            {% if request.endpoint != 'participantes.participantes' %}
+            {% if request.endpoint not in ['participantes.participantes', 'participantes.novo_participante'] %}
             <a href="{{ url_for('participantes.participantes') }}" title="Participantes">
                 <div class="icones-interativos" id="participantes">
                     <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/participantes.png') }}">

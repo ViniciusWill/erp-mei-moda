@@ -1,37 +1,37 @@
-function mostrarFormCompra() {
-    const passoPergunta = document.getElementById("passo-pergunta");
+function exibirEtapa(etapa) {
+    const passoPerguntaProduto = document.getElementById("passo-pergunta-produto");
+    const passoPerguntaFornecedor = document.getElementById("passo-pergunta-fornecedor");
     const passoForm = document.getElementById("passo-form");
 
-    if (!passoPergunta || !passoForm) return;
+    if (!passoPerguntaProduto || !passoPerguntaFornecedor || !passoForm) return;
 
-    passoPergunta.style.display = "none";
-    passoForm.style.display = "block";
-}
-
-function voltarPerguntaCompra() {
-    const passoPergunta = document.getElementById("passo-pergunta");
-    const passoForm = document.getElementById("passo-form");
-
-    if (!passoPergunta || !passoForm) return;
-
-    passoForm.style.display = "none";
-    passoPergunta.style.display = "flex";
+    passoPerguntaProduto.style.display = etapa === "produto" ? "block" : "none";
+    passoPerguntaFornecedor.style.display = etapa === "fornecedor" ? "block" : "none";
+    passoForm.style.display = etapa === "formulario" ? "block" : "none";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("Compras");
-    const mostrarFormBotao = document.querySelector(".js-mostrar-form-compra");
-    const voltarPerguntaBotao = document.querySelector(".js-voltar-pergunta-compra");
+    const avancarProdutoBotao = document.querySelector(".js-mostrar-form-compra");
+    const avancarFornecedorBotao = document.querySelector(".js-mostrar-form-fornecedor");
 
-    if (mostrarFormBotao) {
-        mostrarFormBotao.addEventListener("click", mostrarFormCompra);
+    if (avancarProdutoBotao) {
+        avancarProdutoBotao.addEventListener("click", () => exibirEtapa("fornecedor"));
     }
 
-    if (voltarPerguntaBotao) {
-        voltarPerguntaBotao.addEventListener("click", voltarPerguntaCompra);
+    if (avancarFornecedorBotao) {
+        avancarFornecedorBotao.addEventListener("click", () => exibirEtapa("formulario"));
+    }
+
+    if (container?.dataset.fornecedorSelecionado) {
+        exibirEtapa("formulario");
+        return;
     }
 
     if (container?.dataset.produtoSelecionado) {
-        mostrarFormCompra();
+        exibirEtapa("fornecedor");
+        return;
     }
+
+    exibirEtapa("produto");
 });

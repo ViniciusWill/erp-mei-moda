@@ -1,3 +1,5 @@
+import re
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from app.database.Clientes_repository import ClienteRepository
@@ -47,4 +49,33 @@ def vendas():
         logo_header="imagens/venda.png",
         produtos=produtos,
         clientes=clientes,
+    )
+
+
+@vendas_bp.route("/vendas/novo-cliente", methods=["GET", "POST"])
+def novo_cliente_venda():
+    if request.method == "POST":
+        try:
+            nome = request.form.get("nome", "").strip()
+            cpf = re.sub(r"\D", "", request.form.get("cpf", ""))
+
+            if not nome:
+                flash("Nome e obrigatorio.", "erro")
+                return redirect(url_for("vendas.novo_cliente_venda"))
+
+            if len(cpf) != 11:
+                flash("O CPF deve conter exatamente 11 numeros.", "erro")
+                return redirect(url_for("vendas.novo_cliente_venda"))
+
+            cliente_repo = ClienteRepository()
+            cliente_repo.inserir_cliente(nome=nome, cpf=cpf)
+
+            flash("Cliente cadastrado com sucesso!", "sucesso")
+            return redirect(url_for("vendas.vendas"))
+        except Exception as exc:
+            flash(f"Erro ao cadastrar cliente: {exc}", "erro")
+
+    return render_template(
+        "vendas/NovoCliente.html",
+        logo_header="imagens/venda.png",
     )

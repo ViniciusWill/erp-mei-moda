@@ -19,6 +19,7 @@
                 <tr>
                     <th>Id</th>
                     <th>Nome</th>
+                    <th>CNPJ</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,13 +28,14 @@
                 <tr>
                     <td class="col-produto">{{ p.id }}</td>
                     <td class="col-produto">{{ p.nome }}</td>
+                    <td class="col-produto">{{ p.cnpj or 'Não informado' }}</td>
                     <td>
                         <button class="btn-excluir btn-excluir-participante" data-id="{{ p.id }}" data-nome="{{ p.nome }}">Excluir</button>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="3" class="tabela-vazia">Nenhum participante cadastrado.</td>
+                    <td colspan="4" class="tabela-vazia">Nenhum participante cadastrado.</td>
                 </tr>
                 {% endfor %}
             </tbody>

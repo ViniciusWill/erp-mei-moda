@@ -29,6 +29,21 @@
     font-family: inherit;
 }
 
+<<<<<<< Updated upstream
+=======
+
+.formulario input:invalid,
+.formulario select:invalid {
+    border-color: rgb(210, 80, 70);
+}
+
+.formulario input:focus,
+.formulario select:focus {
+    outline: 2px solid rgba(28, 124, 226, 0.18);
+    border-color: rgb(28, 124, 226);
+}
+
+>>>>>>> Stashed changes
 .formulario input[type="submit"] {
     margin-top: 8px;
     padding: 8px 24px;

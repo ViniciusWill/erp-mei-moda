@@ -12,7 +12,8 @@ def participantes():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
-            ParticipanteService().lancamento_participante(nome=nome)
+            cnpj = request.form.get("cnpj", "").strip()
+            ParticipanteService().lancamento_participante(nome=nome, cnpj=cnpj)
             flash("Participante cadastrado com sucesso!", "sucesso")
             return redirect(url_for("participantes.participantes"))
         except Exception as exc:

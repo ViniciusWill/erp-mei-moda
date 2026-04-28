@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Participante{% endblock %}
+
+{% block content %}
+<div id="Participantes">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form class="formulario" action="{{ url_for('participantes.novo_participante') }}" method="POST">
+        <p class="pergunta-novo__titulo">
+            Cadastrar novo participante
+        </p>
+
+        <p class="form-aviso">
+            Revise os dados antes de salvar. Nomes devem ter pelo menos 2 caracteres e nao devem repetir um cadastro ja existente.
+        </p>
+
+        <p>
+            <label for="nome">Nome do participante</label>
+            <input type="text" name="nome" id="nome" placeholder="Nome do participante" minlength="2" maxlength="120" required>
+        </p>
+        <p class="campo-aviso">Cadastre um nome unico para facilitar a selecao em compras.</p>
+        <p>
+            <label for="cnpj">Cnpj do participante (opcional)</label>
+            <input type="text" name="cnpj" id="cnpj" placeholder="cnpj do participante" maxlength="14">
+        </p>
+        <p class="campo-aviso">O cnpj deve conter apenas numeros, sem pontos ou traços.</p>
+
+        <p>
+            <input type="submit" value="Cadastrar novo Participante">
+        </p>
+    </form>
+
+    <div class="pergunta-retorno">
+        <a href="{{ url_for('participantes.participantes') }}" class="pergunta-cancelar__link">
+            Cancelar e voltar
+        </a>
+    </div>
+</div>
+{% endblock %}

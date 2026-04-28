@@ -6,7 +6,12 @@ class ParticipantesRepository(BaseRepository):
  
     def lancamento_participante(self, participante: Participante):
         self.executar_insert(
+<<<<<<< Updated upstream
             "INSERT INTO Participantes (nome) VALUES (?)", (participante.nome,)
+=======
+            "INSERT INTO Participantes (nome, cnpj) VALUES (?, ?)",
+            (participante.nome, participante.cnpj),
+>>>>>>> Stashed changes
         )
  
     def buscar_todos(self):

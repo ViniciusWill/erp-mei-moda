@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
+import re
 
 from app.database.Participantes_repository import ParticipantesRepository
 from app.database.estoque_repository import EstoqueRepository
@@ -41,6 +42,7 @@ def compras():
             flash(f"Erro ao lançar compra: {exc}", "erro")
 
     produto_selecionado = request.args.get("produto_id", "")
+    fornecedor_selecionado = request.args.get("fornecedor_id", "")
     produtos = estoque_repo.buscar_todos()
     participantes = participantes_repo.buscar_todos()
     return render_template(
@@ -49,6 +51,7 @@ def compras():
         produtos=produtos,
         participantes=participantes,
         produto_selecionado=produto_selecionado,
+        fornecedor_selecionado=fornecedor_selecionado,
     )
 
 
@@ -77,4 +80,39 @@ def novo_produto_compra():
     return render_template(
         "compras/NovoProduto.html",
         logo_header="imagens/compra.png",
+    )
+@compras_bp.route("/compras/novo-fornecedor", methods=["GET", "POST"])
+def novo_fornecedor_compra():
+    produto_id = request.args.get("produto_id", "")
+
+    if request.method == "POST":
+        try:
+            nome = request.form.get("nome", "").strip()
+            cnpj = re.sub(r"\D", "", request.form.get("cnpj", ""))
+
+            if len(cnpj) != 14:
+                raise ValueError("O CNPJ deve conter exatamente 14 numeros.")
+
+            participantes_repo = ParticipantesRepository()
+            novo_id = participantes_repo.inserir_participante(
+                nome=nome,
+                cnpj=cnpj,
+                tipo="fornecedor",
+            )
+
+            flash(f'Fornecedor "{nome}" cadastrado! Agora registre a compra.', "sucesso")
+            return redirect(
+                url_for(
+                    "compras.compras",
+                    produto_id=produto_id,
+                    fornecedor_id=novo_id,
+                )
+            )
+        except Exception as exc:
+            flash(f"Erro ao cadastrar fornecedor: {exc}", "erro")
+
+    return render_template(
+        "compras/NovoFornecedor.html",
+        logo_header="imagens/compra.png",
+        produto_id=produto_id,
     )

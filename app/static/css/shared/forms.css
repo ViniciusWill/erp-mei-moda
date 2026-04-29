@@ -19,6 +19,32 @@
     justify-content: space-between;
 }
 
+.formulario .form-aviso,
+.formulario .campo-aviso {
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.formulario .form-aviso {
+    padding: 10px 12px;
+    border: 1px solid rgb(255, 193, 7);
+    border-radius: 8px;
+    background-color: rgb(255, 248, 225);
+    color: rgb(122, 79, 0);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.formulario .campo-aviso {
+    margin-top: -2px;
+    color: rgb(95, 95, 95);
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
 .formulario input[type="text"],
 .formulario input[type="date"],
 .formulario input[type="number"],
@@ -28,9 +54,6 @@
     border-radius: 6px;
     font-family: inherit;
 }
-
-<<<<<<< Updated upstream
-=======
 
 .formulario input:invalid,
 .formulario select:invalid {
@@ -43,7 +66,6 @@
     border-color: rgb(28, 124, 226);
 }
 
->>>>>>> Stashed changes
 .formulario input[type="submit"] {
     margin-top: 8px;
     padding: 8px 24px;

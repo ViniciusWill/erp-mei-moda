@@ -3,37 +3,75 @@
 {% block title %}Nova Venda{% endblock %}
 
 {% block content %}
-<div id="Vendas">
-    <form class="formulario" action="{{ url_for('vendas.vendas') }}" method="POST">
-     <p>
-          <label for="cliente_id">Cliente:</label>
-            <select name="cliente_id" id="cliente_id" required>
-                <option value="">Selecione</option>
-                {% for c in clientes %}
-                    <option value="{{ c.id }}">{{ c.nome }}</option>
-                {% endfor %}
-            </select>
-    </p>
-     <p>
-        <label for ="estoque_id">Codigo do Produto: </label> 
-            <select name="estoque_id" id="estoque_id" required>
-                <option value="">Selecione</option>
-                {% for p in produtos %}
-                    <option value="{{ p.id }}">{{ p.id }}</option>
-                {% endfor %}
-            </select>
-    </p>    
-    <p>
-        <label for ="Quantidade-ven">Quantidade: </label>
-            <input type="number" name="Quantidade-ven" id="qntven" min="1" required>
-    </p>
-    <p>
-        <label for="parcelas">Parcelas: </label> 
-            <input type="number" name="parcelas" id="parcelas" min="1" required>
-    </p>
-    <p>
-            <input type="submit" value="Registrar Venda">
-    </p>
-    </form>
+<div id="Vendas" data-produto-selecionado="{{ produto_selecionado }}">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alerta alerta-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div id="passo-pergunta" class="formulario pergunta">
+        <p class="pergunta__texto">
+            O cliente da operacao ja esta cadastrado?
+        </p>
+        <div class="pergunta__acoes">
+            <button type="button" class="btn-sim js-mostrar-form-venda">
+                Sim
+            </button>
+            <a href="{{ url_for('vendas.novo_cliente_venda') }}" class="btn-nao">
+                Nao
+            </a>
+        </div>
+    </div>
+
+    <div id="passo-form" class="etapa-form">
+        <form class="formulario" action="{{ url_for('vendas.vendas') }}" method="POST">
+            <p class="form-aviso">
+                Revise os dados antes de registrar. Selecione um cliente e um produto validos. Quantidade e parcelas devem ser maiores que zero.
+            </p>
+
+            <p>
+                <label for="cliente_id">Cliente:</label>
+                <select name="cliente_id" id="cliente_id" required>
+                    <option value="">Selecione</option>
+                    {% for c in clientes %}
+                        <option value="{{ c.id }}">{{ c.nome }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+            <p class="campo-aviso">Escolha um cliente ja cadastrado no sistema.</p>
+
+            <p>
+                <label for="estoque_id">Codigo do Produto:</label>
+                <select name="estoque_id" id="estoque_id" required>
+                    <option value="">Selecione</option>
+                    {% for p in produtos %}
+                        <option value="{{ p.id }}">{{ p.id }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+            <p class="campo-aviso">Confirme o codigo do produto antes de lancar a venda.</p>
+
+            <p>
+                <label for="qntven">Quantidade:</label>
+                <input type="number" name="Quantidade-ven" id="qntven" min="1" step="1" required>
+            </p>
+            <p class="campo-aviso">Informe uma quantidade inteira maior que zero.</p>
+
+            <p>
+                <label for="parcelas">Parcelas:</label>
+                <input type="number" name="parcelas" id="parcelas" min="1" step="1" value="1" required>
+            </p>
+            <p class="campo-aviso">Use 1 para venda a vista ou um numero inteiro maior para parcelamento.</p>
+
+            <p>
+                <input type="submit" value="Registrar Venda">
+            </p>
+        </form>
+    </div>
 </div>
+<script src="{{ url_for('static', filename='js/venda.js') }}"></script>
 {% endblock %}

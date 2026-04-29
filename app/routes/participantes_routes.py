@@ -7,8 +7,21 @@ from app.services.participantes_service import ParticipanteService
 participantes_bp = Blueprint("participantes", __name__)
 
 
-@participantes_bp.route("/participantes", methods=["GET", "POST"])
+@participantes_bp.route("/participantes", methods=["GET"])
 def participantes():
+    participantes_repo = ParticipantesRepository()
+    partic = participantes_repo.buscar_todos()
+    total_partic = len(partic)
+    return render_template(
+        "participantes/Participantes.html",
+        logo_header="imagens/participantes.png",
+        partic=partic,
+        total_partic=total_partic,
+    )
+
+
+@participantes_bp.route("/participantes/novo", methods=["GET", "POST"])
+def novo_participante():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
@@ -19,14 +32,9 @@ def participantes():
         except Exception as exc:
             flash(f"Erro ao cadastrar participante: {exc}", "erro")
 
-    participantes_repo = ParticipantesRepository()
-    partic = participantes_repo.buscar_todos()
-    total_partic = len(partic)
     return render_template(
-        "participantes/Participantes.html",
+        "participantes/NovoParticipante.html",
         logo_header="imagens/participantes.png",
-        partic=partic,
-        total_partic=total_partic,
     )
 
 

@@ -36,3 +36,92 @@
     background-color: rgb(244, 67, 54);
     color: #fff;
 }
+.pergunta {
+    gap: 16px;
+    text-align: center;
+}
+
+.pergunta__texto {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    justify-content: center;
+}
+
+.pergunta__acoes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.etapa-form {
+    display: none;
+}
+
+.pergunta-retorno,
+.pergunta-cancelar {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.pergunta-retorno__botao,
+.pergunta-cancelar__link {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.pergunta-cancelar__link {
+    display: inline-block;
+}
+
+.pergunta-novo__titulo {
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    justify-content: center;
+}
+
+.btn-sim {
+    padding: 10px 20px;
+    border: 1px solid rgb(76, 175, 80);
+    border-radius: 6px;
+    background-color: transparent;
+    color: rgb(30, 130, 50);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    text-decoration: none;
+}
+
+.btn-sim:hover {
+    background-color: rgb(76, 175, 80);
+    color: #fff;
+}
+
+.btn-nao {
+    padding: 10px 20px;
+    border: 1px solid rgb(28, 124, 226);
+    border-radius: 6px;
+    background-color: transparent;
+    color: rgb(20, 90, 180);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-nao:hover {
+    background-color: rgb(28, 124, 226);
+    color: #fff;
+}

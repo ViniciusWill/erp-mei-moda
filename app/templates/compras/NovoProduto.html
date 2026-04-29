@@ -15,30 +15,37 @@
 
     <form class="formulario" action="{{ url_for('compras.novo_produto_compra') }}" method="POST">
 
-        <p class="compra-novo-produto__titulo">
+        <p class="pergunta-novo__titulo">
             Cadastrar novo produto no estoque
+        </p>
+
+        <p class="form-aviso">
+            Revise os dados antes de salvar. Nome e tamanho nao devem repetir uma combinacao ja cadastrada. Quantidade nao pode ser negativa e o valor deve ser maior que zero.
         </p>
 
         <p>
             <label for="nome">Nome do produto:</label>
-            <input type="text" name="nome" id="nome" placeholder="Ex: Camiseta básica" required>
+            <input type="text" name="nome" id="nome" placeholder="Ex: Camiseta basica" minlength="2" maxlength="120" required>
         </p>
+        <p class="campo-aviso">Use um nome claro para evitar duplicidade de cadastro.</p>
 
         <p>
             <label for="tamanho">Tamanho:</label>
-            <input type="text" name="tamanho" id="tamanho" placeholder="Ex: M, G, 42..." required>
+            <input type="text" name="tamanho" id="tamanho" placeholder="Ex: M, G, 42" minlength="1" maxlength="20" required>
         </p>
+        <p class="campo-aviso">Informe exatamente o tamanho que sera usado na venda.</p>
 
         <p>
             <label for="quantidade">Quantidade inicial:</label>
-            <input type="number" name="quantidade" id="quantidade" min="0" value="0" required>
+            <input type="number" name="quantidade" id="quantidade" min="0" step="1" value="0" required>
         </p>
+        <p class="campo-aviso">Aceita zero ou mais unidades.</p>
 
         <p>
-            <label for="valor_unitario">Valor unitário (R$):</label>
-            <input type="number" name="valor_unitario" id="valor_unitario"
-                   step="0.01" min="0" placeholder="0.00" required>
+            <label for="valor_unitario">Valor unitario (R$):</label>
+            <input type="number" name="valor_unitario" id="valor_unitario" step="0.01" min="0.01" placeholder="0.00" required>
         </p>
+        <p class="campo-aviso">Informe um valor maior que zero usando duas casas decimais, se precisar.</p>
 
         <p>
             <input type="submit" value="Salvar e continuar compra">
@@ -46,8 +53,8 @@
 
     </form>
 
-    <div class="compra-cancelar">
-        <a href="{{ url_for('compras.compras') }}" class="compra-cancelar__link">
+    <div class="pergunta-retorno">
+        <a href="{{ url_for('compras.compras') }}" class="pergunta-cancelar__link">
             Cancelar e voltar
         </a>
     </div>

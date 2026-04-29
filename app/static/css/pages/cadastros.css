@@ -5,9 +5,22 @@
     color: rgb(0, 0, 0);
 }
 
+.cadastro-atalho {
+    position: fixed;
+    right: 28px;
+    bottom: 72px;
+    margin: 0;
+    z-index: 20;
+}
+
 @media (max-width: 600px) {
     #Clientes,
     #Participantes {
         padding: 14px 14px 80px 14px;
+    }
+
+    .cadastro-atalho {
+        right: 14px;
+        bottom: 14px;
     }
 }

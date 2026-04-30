@@ -13,15 +13,15 @@ def participantes():
     partic = participantes_repo.buscar_todos()
     total_partic = len(partic)
     return render_template(
-        "participantes/Participantes.html",
+        "participantes/NovoParticipante.html",
         logo_header="imagens/participantes.png",
-        partic=partic,
-        total_partic=total_partic,
+        participantes=partic,
+        total_partic=total_partic
     )
 
 
 @participantes_bp.route("/participantes/novo", methods=["GET", "POST"])
-def novo_participante():
+def inserir_participante():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()

@@ -1,24 +1,33 @@
-.alerta {
+.flash-container {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: fit-content;
+    max-width: 90%;
+}
+
+.flash-container .alerta {
     padding: 10px 16px;
     border-radius: 6px;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
     font-weight: bold;
-    font-family: "Poppins", inherit;
+    text-align: center;
+    white-space: nowrap;
+    margin-bottom: 8px;
 }
 
-.alerta-sucesso {
-    background-color: rgb(232, 255, 237);
-    color: rgb(30, 130, 50);
-    border: 1px solid rgb(76, 175, 80);
+.flash-container .alerta-success {
+    background-color: RGB(232, 255, 237) !important;
+    color: RGB(30, 130, 50) !important;
+    border: 1px solid RGB(76, 175,80) !important;
 }
 
-.alerta-erro {
-    background-color: rgb(255, 243, 242);
-    color: rgb(200, 40, 30);
-    border: 1px solid rgb(244, 67, 54);
+.flash-container .alerta-error {
+    background-color: RGB(255, 243, 242) !important;
+    color: RGB(200, 40, 30) !important;
+    border: 1px solid RGB(244, 67, 54) !important;
 }
-
 .btn-excluir {
     padding: 4px 12px;
     border: 1px solid rgb(244, 67, 54);

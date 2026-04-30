@@ -6,7 +6,8 @@ class ParticipantesRepository(BaseRepository):
  
     def lancamento_participante(self, participante: Participante):
         self.executar_insert(
-            "INSERT INTO Participantes (nome) VALUES (?)", (participante.nome,)
+            "INSERT INTO Participantes (nome, cnpj) VALUES (?, ?)",
+            (participante.nome, participante.Cnpj),
         )
 
     def buscar_todos(self):

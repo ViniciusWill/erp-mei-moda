@@ -227,6 +227,7 @@ python app/database/setup_db.py && gunicorn run:app
 ```
 
 Nao rode `python Tests/inserir_dados.py` no Start Command de producao. Esse script serve apenas para popular o banco de teste/desenvolvimento com dados de exemplo.
+Em deploys no Render, esse script falha de proposito para evitar que dados de exemplo sejam recriados em producao.
 
 ## Estrutura principal do projeto
 

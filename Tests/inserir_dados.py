@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import sys
 from datetime import datetime, timedelta
@@ -51,6 +52,11 @@ def buscar_ou_criar(cursor, is_postgres: bool, tabela: str, coluna: str, valor):
 
 
 def popular_banco():
+    if os.environ.get("RENDER") or os.environ.get("RENDER_SERVICE_ID"):
+        raise RuntimeError(
+            "Tests/inserir_dados.py nao deve ser executado em producao no Render."
+        )
+
     try:
         conn, is_postgres = conectar_banco()
         cur = conn.cursor()

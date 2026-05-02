@@ -246,6 +246,31 @@ def test_rotas_financeiras_renderizam_templates(client):
     assert contas_receber.status_code == 200
 
 
+def test_rotas_get_principais_renderizam_templates(client):
+    test_client, _ = client
+
+    rotas = [
+        "/",
+        "/clientes",
+        "/clientes/novo",
+        "/compras",
+        "/compras/novo-produto",
+        "/compras/novo-fornecedor",
+        "/estoque",
+        "/participantes",
+        "/participantes/novo",
+        "/relatorios",
+        "/vendas",
+        "/vendas/novo-cliente",
+        "/financeiro/contas_pagar",
+        "/financeiro/contas_receber",
+    ]
+
+    for rota in rotas:
+        response = test_client.get(rota)
+        assert response.status_code == 200, rota
+
+
 def test_relatorio_de_compras_retorna_todos_os_registros(client):
     _, db_path = client
 

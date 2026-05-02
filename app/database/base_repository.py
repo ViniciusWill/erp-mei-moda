@@ -1,4 +1,3 @@
-import os
 import re
 import sqlite3
 from pathlib import Path
@@ -6,10 +5,12 @@ from pathlib import Path
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+from app.database.db_config import normalizar_database_url, obter_database_url
+
 
 class BaseRepository:
     def __init__(self):
-        self.db_url = os.environ.get("DATABASE_URL")
+        self.db_url = obter_database_url()
         self.is_postgres = bool(self.db_url)
 
         diretorio_dados = Path(__file__).resolve().parent.parent.parent / "dados"
@@ -18,7 +19,7 @@ class BaseRepository:
 
     def _connect(self):
         if self.is_postgres:
-            url = self.db_url.replace("postgres://", "postgresql://", 1)
+            url = normalizar_database_url(self.db_url)
             return psycopg2.connect(url, cursor_factory=RealDictCursor)
 
         conn = sqlite3.connect(self.caminho_banco)

@@ -79,6 +79,8 @@ body {
     width: 100%;
 }
 
+
+
 #inicio { background-color: rgb(255, 255, 255); }
 #venda { background-color: rgb(76, 175, 80); }
 #compra { background-color: rgb(28, 124, 226); }
@@ -99,4 +101,12 @@ body {
         grid-template-columns: repeat(4, 50px);
         justify-content: center;
     }
+}
+
+.versao {
+    position: fixed;
+    bottom: 5px;
+    right: 10px;
+    font-size: 12px;
+    color: #333;
 }

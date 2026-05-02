@@ -25,7 +25,7 @@ def contas_pagar():
     )
 
     return render_template(
-        "financeiro/ContasPagar.html",
+        "Financeiro/ContasPagar.html",
         logo_header="imagens/pagar.png",
         contas=contas,
         hoje=hoje,

@@ -1,8 +1,13 @@
-import os
 import sqlite3
+import sys
 from pathlib import Path
 
 import psycopg2
+
+if __package__ in (None, ""):
+    sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from app.database.db_config import normalizar_database_url, obter_database_url
 
 
 def garantir_coluna(conn, db_url, tabela: str, coluna: str, definicao: str):
@@ -31,15 +36,15 @@ def garantir_coluna(conn, db_url, tabela: str, coluna: str, definicao: str):
 
 
 def criar_banco():
-    db_url = os.environ.get("DATABASE_URL")
+    db_url = obter_database_url()
 
     diretorio_dados = Path(__file__).parent.parent.parent / "dados"
     diretorio_dados.mkdir(parents=True, exist_ok=True)
     caminho_banco = diretorio_dados / "sistema_loja.db"
 
     if db_url:
-        print("Conectando ao PostgreSQL (Render)...")
-        url_corrigida = db_url.replace("postgres://", "postgresql://", 1)
+        print("Conectando ao PostgreSQL...")
+        url_corrigida = normalizar_database_url(db_url)
         conn = psycopg2.connect(url_corrigida)
         id_type = "SERIAL PRIMARY KEY"
     else:

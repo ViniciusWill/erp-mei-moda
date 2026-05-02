@@ -36,10 +36,10 @@ def compras():
                     parcelas=parcelas,
                 )
 
-            flash("Compra lançada com sucesso!", "sucesso")
-            return redirect(url_for("compras.compras"))
+            flash("Compra lançada com sucesso!", "success")
+            return redirect(url_for("home.index"))
         except Exception as exc:
-            flash(f"Erro ao lançar compra: {exc}", "erro")
+            flash(f"Erro ao lançar compra: {exc}", "error")
 
     produto_selecionado = request.args.get("produto_id", "")
     fornecedor_selecionado = request.args.get("fornecedor_id", "")
@@ -72,10 +72,10 @@ def novo_produto_compra():
                 valor_unitario=valor_unitario,
             )
 
-            flash(f'Produto "{nome}" cadastrado! Agora registre a compra.', "sucesso")
+            flash(f'Produto "{nome}" cadastrado!', "success")
             return redirect(url_for("compras.compras", produto_id=novo_id))
         except Exception as exc:
-            flash(f"Erro ao cadastrar produto: {exc}", "erro")
+            flash(f"Erro ao cadastrar produto: {exc}", "error")
 
     return render_template(
         "compras/NovoProduto.html",
@@ -100,7 +100,7 @@ def novo_fornecedor_compra():
                 tipo="fornecedor",
             )
 
-            flash(f'Fornecedor "{nome}" cadastrado! Agora registre a compra.', "sucesso")
+            flash(f'Fornecedor "{nome}" cadastrado! Agora registre a compra.', "success")
             return redirect(
                 url_for(
                     "compras.compras",
@@ -109,7 +109,7 @@ def novo_fornecedor_compra():
                 )
             )
         except Exception as exc:
-            flash(f"Erro ao cadastrar fornecedor: {exc}", "erro")
+            flash(f"Erro ao cadastrar fornecedor: {exc}", "error")
 
     return render_template(
         "compras/NovoFornecedor.html",

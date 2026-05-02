@@ -7,6 +7,17 @@
 {% endblock %}
 
 {% block content %}
+<div class="pagina-inicio">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="alerta alerta-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 <nav class="menu-nav">
         <a href="{{ url_for('vendas.vendas') }}">
          <div id="venda" class="menu-item">
@@ -63,4 +74,6 @@
         </div>
     </a>
 </nav>
+</div>
+<p class="versao">Versão 1.1</p>
 {% endblock %}

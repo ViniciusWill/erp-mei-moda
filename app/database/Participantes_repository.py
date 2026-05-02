@@ -7,7 +7,7 @@ class ParticipantesRepository(BaseRepository):
     def lancamento_participante(self, participante: Participante):
         self.executar_insert(
             "INSERT INTO Participantes (nome, cnpj) VALUES (?, ?)",
-            (participante.nome, participante.Cnpj),
+            (participante.nome, participante.cnpj),
         )
 
     def inserir_participante(self, nome: str, cnpj: str | None = None, tipo: str | None = None):

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Cadastrar Participante{% endblock %}
+{% block title %}Editar Participante{% endblock %}
 
 {% block content %}
 <div id="Participantes">
@@ -13,29 +13,28 @@
         {% endif %}
     {% endwith %}
 
-    <form class="formulario" action="{{ url_for('participantes.novo_participante') }}" method="POST">
+    <form class="formulario" action="{{ url_for('participantes.editar_participante', participante_id=participante.id) }}" method="POST">
         <p class="pergunta-novo__titulo">
-            Cadastrar novo participante
-        </p>
-
-        <p class="form-aviso">
-            Revise os dados antes de salvar. Nomes devem ter pelo menos 2 caracteres e nao devem repetir um cadastro ja existente.
+            Editar participante
         </p>
 
         <p>
             <label for="nome">Nome do participante</label>
-            <input type="text" name="nome" id="nome" placeholder="Nome do participante" minlength="2" maxlength="120" required>
+            <input type="text" name="nome" id="nome" placeholder="Nome do participante" minlength="2" maxlength="120" value="{{ participante.nome }}" required>
         </p>
         <p class="campo-aviso">Cadastre um nome unico para facilitar a selecao em compras.</p>
         <p>
             <label for="cnpj">Cnpj do participante (opcional)</label>
-            <input type="text" name="cnpj" id="cnpj" placeholder="cnpj do participante" maxlength="14">
-        </p>
-        <p class="campo-aviso">O cnpj deve conter apenas numeros, sem pontos ou traços.</p>
+            <input type="text" name="cnpj" id="cnpj" placeholder="cnpj do participante" maxlength="14" value="{{ participante.cnpj or '' }}">
 
-        <p>
-            <input type="submit" value="Cadastrar novo Participante">
         </p>
+        <p class="campo-aviso">O cnpj deve conter apenas numeros, sem pontos
+    ou traços.
+        </p>
+        
+        <p>
+            <input type="submit" value="Salvar alterações">
+        </p>    
     </form>
 
     <div class="pergunta-retorno">

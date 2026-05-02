@@ -25,7 +25,7 @@ def contas_receber():
     )
 
     return render_template(
-        "financeiro/ContasReceber.html",
+        "Financeiro/ContasReceber.html",
         logo_header="imagens/receber.png",
         contas=contas,
         hoje=hoje,

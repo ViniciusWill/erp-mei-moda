@@ -124,17 +124,50 @@ Se a variavel `DATABASE_URL` nao existir, o sistema cria e usa automaticamente o
 
 `dados/sistema_loja.db`
 
-### Opcao B: uso com PostgreSQL
-Defina a variavel de ambiente `DATABASE_URL` antes de iniciar a aplicacao.
+### Opcao B: uso local com PostgreSQL de teste
+Defina a variavel de ambiente `TEST_DATABASE_URL` antes de iniciar a aplicacao.
+
+Quando voce roda o projeto localmente, o sistema usa `TEST_DATABASE_URL` se ela existir.
+Assim, voce evita alterar o banco de producao durante testes.
 
 Exemplo:
 ```bash
-DATABASE_URL=postgresql://usuario:senha@host:5432/banco
+TEST_DATABASE_URL=postgresql://usuario:senha@host:5432/banco_teste
 ```
 
 No Windows PowerShell:
 ```powershell
-$env:DATABASE_URL="postgresql://usuario:senha@host:5432/banco"
+$env:TEST_DATABASE_URL="postgresql://usuario:senha@host:5432/banco_teste"
+```
+
+Voce tambem pode criar um arquivo `.env` local seguindo o modelo de `.env.example`.
+
+### Opcao C: uso em producao com PostgreSQL
+No Render, configure a variavel de ambiente `DATABASE_URL` apontando para o banco de producao.
+
+Em producao, nao use `TEST_DATABASE_URL`.
+
+### Replicar producao para o banco local de teste
+Para rodar localmente com os mesmos dados da producao, configure no seu `.env` local:
+
+```env
+PROD_DATABASE_URL=postgresql://usuario:senha@host:5432/banco_producao
+TEST_DATABASE_URL=postgresql://usuario:senha@host:5432/banco_teste
+```
+
+Depois execute:
+
+```bash
+python scripts/sync_prod_to_test.py
+```
+
+O script apaga os dados do banco de teste e copia os dados atuais da producao.
+Ele nao deve ser executado no Render.
+
+Para rodar sem confirmacao interativa:
+
+```bash
+python scripts/sync_prod_to_test.py --yes
 ```
 
 ## Inicializacao do sistema
@@ -188,10 +221,12 @@ Fluxo recomendado de deploy:
 5. iniciar o servidor WSGI:
    `gunicorn run:app`
 
-Comando de start completo:
+Comando de start recomendado:
 ```bash
-python app/database/setup_db.py && python Tests/inserir_dados.py && gunicorn run:app
+python app/database/setup_db.py && gunicorn run:app
 ```
+
+Nao rode `python Tests/inserir_dados.py` no Start Command de producao. Esse script serve apenas para popular o banco de teste/desenvolvimento com dados de exemplo.
 
 ## Estrutura principal do projeto
 

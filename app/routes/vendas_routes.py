@@ -37,10 +37,11 @@ def vendas():
                     parcelas=parcelas,
                 )
 
-            flash("Venda lancada com sucesso!", "sucesso")
-            return redirect(url_for("vendas.vendas"))
+
+            flash("Venda lançada com sucesso!", "success")
+            return redirect(url_for("home.index"))
         except Exception as exc:
-            flash(f"Erro ao lancar venda: {exc}", "erro")
+            flash(f"Erro ao lançar venda: {exc}", "error")
 
     produtos = estoque_repo.buscar_todos()
     clientes = clientes_repo.buscar_todos()
@@ -70,10 +71,10 @@ def novo_cliente_venda():
             cliente_repo = ClienteRepository()
             cliente_repo.inserir_cliente(nome=nome, cpf=cpf)
 
-            flash("Cliente cadastrado com sucesso!", "sucesso")
+            flash("Cliente cadastrado com sucesso!", "success")
             return redirect(url_for("vendas.vendas"))
         except Exception as exc:
-            flash(f"Erro ao cadastrar cliente: {exc}", "erro")
+            flash(f"Erro ao cadastrar cliente: {exc}", "error")
 
     return render_template(
         "vendas/NovoCliente.html",

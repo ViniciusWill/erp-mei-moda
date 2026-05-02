@@ -1,16 +1,20 @@
-import os
 import sqlite3
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import psycopg2
 
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from app.database.db_config import normalizar_database_url, obter_database_url
+
 
 def conectar_banco():
-    database_url = os.getenv("DATABASE_URL")
+    database_url = obter_database_url()
 
     if database_url:
-        url = database_url.replace("postgres://", "postgresql://", 1)
+        url = normalizar_database_url(database_url)
         return psycopg2.connect(url), True
 
     caminho_banco = Path(__file__).resolve().parent.parent / "dados" / "sistema_loja.db"

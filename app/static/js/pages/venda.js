@@ -1,3 +1,5 @@
+import { onReady } from "../core/dom.js";
+
 function mostrarFormVenda() {
     const passoPergunta = document.getElementById("passo-pergunta");
     const passoForm = document.getElementById("passo-form");
@@ -8,7 +10,7 @@ function mostrarFormVenda() {
     passoForm.style.display = "block";
 }
 
-function VoltarperguntaVenda() {
+function voltarPerguntaVenda() {
     const passoPergunta = document.getElementById("passo-pergunta");
     const passoForm = document.getElementById("passo-form");
 
@@ -18,7 +20,7 @@ function VoltarperguntaVenda() {
     passoPergunta.style.display = "flex";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+onReady(() => {
     const container = document.getElementById("Vendas");
     const mostrarFormBotao = document.querySelector(".js-mostrar-form-venda");
     const voltarPerguntaBotao = document.querySelector(".js-voltar-pergunta-venda");

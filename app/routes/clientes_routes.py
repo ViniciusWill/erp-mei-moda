@@ -25,11 +25,12 @@ def novo_cliente():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
-            ClienteService().lancamento_cliente(nome=nome)
-            flash("Cliente cadastrado com sucesso!", "sucesso")
+            cpf = request.form.get("cpf", "").strip()
+            ClienteService().lancamento_cliente(nome=nome, cpf=cpf)
+            flash("Cliente cadastrado com sucesso!", "success")
             return redirect(url_for("clientes.clientes"))
         except Exception as exc:
-            flash(f"Erro ao cadastrar cliente: {exc}", "erro")
+            flash(f"Erro ao cadastrar cliente: {exc}", "error")
 
     return render_template(
         "clientes/NovoCliente.html",
@@ -40,7 +41,7 @@ def novo_cliente():
 def excluir_cliente(cliente_id):
     try:
         ClienteService().excluir_cliente(cliente_id)
-        flash("Cliente excluído com sucesso!", "sucesso")
+        flash("Cliente excluído com sucesso!", "success")
     except Exception as exc:
         erro = str(exc)
         if "foreign key" in erro.lower() or "fkey" in erro.lower():
@@ -50,5 +51,5 @@ def excluir_cliente(cliente_id):
                 "erro"
             )
         else:
-            flash(f"Erro ao excluir cliente: {exc}", "erro")
+            flash(f"Erro ao excluir cliente: {exc}", "error")
     return redirect(url_for("clientes.clientes"))

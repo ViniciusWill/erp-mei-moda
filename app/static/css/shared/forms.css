@@ -60,6 +60,18 @@
     border-color: rgb(210, 80, 70);
 }
 
+.formulario .campo-invalido {
+    border-color: rgb(210, 80, 70);
+}
+
+.formulario .campo-erro {
+    display: block;
+    width: 100%;
+    color: rgb(200, 40, 30);
+    font-size: 0.72rem;
+    text-align: right;
+}
+
 .formulario input:focus,
 .formulario select:focus {
     outline: 2px solid rgba(28, 124, 226, 0.18);

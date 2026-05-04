@@ -33,9 +33,9 @@ def relatorios():
 def excluir_venda(venda_id):
     try:
         VendaRepository().excluir_por_id(venda_id)
-        flash("Venda excluída com sucesso!", "sucesso")
+        flash("Venda excluída com sucesso!", "success")
     except Exception as exc:
-        flash(f"Erro ao excluir venda: {exc}", "erro")
+        flash(f"Erro ao excluir venda: {exc}", "error")
     return redirect(url_for("relatorios.relatorios"))
 
 
@@ -43,7 +43,7 @@ def excluir_venda(venda_id):
 def excluir_compra(compra_id):
     try:
         CompraRepository().excluir_por_id(compra_id)
-        flash("Compra excluída com sucesso!", "sucesso")
+        flash("Compra excluída com sucesso!", "success")
     except Exception as exc:
-        flash(f"Erro ao excluir compra: {exc}", "erro")
+        flash(f"Erro ao excluir compra: {exc}", "error")
     return redirect(url_for("relatorios.relatorios"))

@@ -1,10 +1,12 @@
 import ast
+import re
 from pathlib import Path
 
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 ROUTES_DIR = ROOT_DIR / "app" / "routes"
 TEMPLATES_DIR = ROOT_DIR / "app" / "templates"
+STATIC_DIR = ROOT_DIR / "app" / "static"
 
 
 def iter_render_template_names():
@@ -33,3 +35,18 @@ def test_render_template_paths_exist_with_exact_case():
             erros.append(f"{route_file.relative_to(ROOT_DIR)} -> {template_name}")
 
     assert not erros, "Templates nao encontrados com o mesmo uso de maiusculas/minusculas:\n" + "\n".join(erros)
+
+
+def test_static_js_paths_in_templates_exist_with_exact_case():
+    erros = []
+    padrao = re.compile(r"filename=['\"](js/[^'\"]+\.js)['\"]")
+
+    for template_file in TEMPLATES_DIR.rglob("*.html"):
+        conteudo = template_file.read_text(encoding="utf-8")
+
+        for caminho_js in padrao.findall(conteudo):
+            caminho_static = STATIC_DIR / caminho_js
+            if not caminho_static.is_file():
+                erros.append(f"{template_file.relative_to(ROOT_DIR)} -> {caminho_js}")
+
+    assert not erros, "Arquivos JS referenciados nos templates nao encontrados:\n" + "\n".join(erros)

@@ -6,8 +6,12 @@ class ClienteService:
     def __init__(self):
         self.cliente_repo = ClienteRepository()
 
-    def lancamento_cliente(self, nome: str):
-        novo_cliente = Cliente(nome=nome)
+    def lancamento_cliente(self, nome: str, cpf: str = None):
+        cpf = cpf.strip() if cpf else None
+        if cpf == "":
+            cpf = None
+
+        novo_cliente = Cliente(nome=nome, cpf=cpf)
         self.cliente_repo.salvar(novo_cliente)
 
     def excluir_cliente(self, cliente_id: int):  

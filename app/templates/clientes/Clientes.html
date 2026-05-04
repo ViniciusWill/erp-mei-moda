@@ -4,19 +4,30 @@
 
 {% block content %}
 <div id="Clientes">
-
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
+        <div class="flash-container">
             {% for category, message in messages %}
                 <div class="alerta alerta-{{ category }}">{{ message }}</div>
             {% endfor %}
+        </div>
         {% endif %}
+        
     {% endwith %}
 
     <div class="cadastro-atalho">
         <a href="{{ url_for('clientes.novo_cliente') }}" class="btn-nao">
             Cadastrar Cliente
         </a>
+    </div>
+
+    <div class="estoque-controles">
+        <input
+            type="text"
+            id="campoBusca"
+            class="estoque-busca"
+            placeholder="Buscar cliente..."
+        >
     </div>
 
     <div class="estoque-tabela-wrapper">
@@ -49,5 +60,5 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/clientes.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/pages/clientes.js') }}"></script>
 {% endblock %}

@@ -45,6 +45,89 @@
     background-color: rgb(244, 67, 54);
     color: #fff;
 }
+
+.toast-container {
+    position: fixed;
+    top: 60px;
+    right: 18px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(320px, calc(100vw - 36px));
+}
+
+.toast {
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+    font-size: 0.85rem;
+    font-weight: bold;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.toast--success {
+    border-color: rgb(76, 175, 80);
+    color: rgb(30, 130, 50);
+    background-color: rgb(232, 255, 237);
+}
+
+.toast--error {
+    border-color: rgb(244, 67, 54);
+    color: rgb(200, 40, 30);
+    background-color: rgb(255, 243, 242);
+}
+
+.toast--saindo {
+    opacity: 0;
+    transform: translateY(-6px);
+}
+
+.modal-confirmacao {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.42);
+}
+
+.modal-confirmacao--ativa {
+    display: flex;
+}
+
+.modal-confirmacao__caixa {
+    width: min(420px, 100%);
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+}
+
+.modal-confirmacao__titulo {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+}
+
+.modal-confirmacao__mensagem {
+    margin: 0;
+    color: #444;
+    line-height: 1.5;
+}
+
+.modal-confirmacao__acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
 .pergunta {
     gap: 16px;
     text-align: center;

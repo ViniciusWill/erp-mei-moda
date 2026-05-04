@@ -17,6 +17,7 @@ __pycache__/
 venv/
 .env
 .pytest_cache/
+pytest-cache-files-*/
 Tests/.tmp/
 
 # --- VS Code ---

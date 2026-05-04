@@ -27,10 +27,10 @@ def novo_participante():
             nome = request.form.get("nome", "").strip()
             cnpj = request.form.get("cnpj", "").strip()
             ParticipanteService().lancamento_participante(nome=nome, cnpj=cnpj)
-            flash("Participante cadastrado com sucesso!", "sucesso")
+            flash("Participante cadastrado com sucesso!", "success")
             return redirect(url_for("participantes.participantes"))
         except Exception as exc:
-            flash(f"Erro ao cadastrar participante: {exc}", "erro")
+            flash(f"Erro ao cadastrar participante: {exc}", "error")
 
     return render_template(
         "participantes/NovoParticipante.html",
@@ -42,15 +42,15 @@ def novo_participante():
 def excluir_participante(participante_id):
     try:
         ParticipanteService().excluir_participante(participante_id)
-        flash("Participante excluído com sucesso!", "sucesso")
+        flash("Participante excluído com sucesso!", "success")
     except Exception as exc:
         erro = str(exc)
         if "foreign key" in erro.lower() or "fkey" in erro.lower():
             flash(
                 "Este participante possui compras registradas. "
                 "Para excluí-lo, primeiro exclua as compras vinculadas a ele na tela de Relatórios.",
-                "erro"
+                "error"
             )
         else:
-            flash(f"Erro ao excluir participante: {exc}", "erro")
+            flash(f"Erro ao excluir participante: {exc}", "error")
     return redirect(url_for("participantes.participantes"))

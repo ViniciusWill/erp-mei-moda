@@ -65,14 +65,14 @@ def novo_cliente_venda():
                 return redirect(url_for("vendas.novo_cliente_venda"))
 
             if len(cpf) != 11:
-                flash("O CPF deve conter exatamente 11 numeros.", "erro")
+                flash("O CPF deve conter exatamente 11 numeros.", "error")
                 return redirect(url_for("vendas.novo_cliente_venda"))
 
             cliente_repo = ClienteRepository()
             cliente_repo.inserir_cliente(nome=nome, cpf=cpf)
 
             flash("Cliente cadastrado com sucesso!", "success")
-            return redirect(url_for("vendas.vendas"))
+            return redirect(url_for("home.index"))
         except Exception as exc:
             flash(f"Erro ao cadastrar cliente: {exc}", "error")
 

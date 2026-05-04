@@ -7,9 +7,11 @@
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
+        <div class="flash-container">
             {% for category, message in messages %}
                 <div class="alerta alerta-{{ category }}">{{ message }}</div>
             {% endfor %}
+        </div>
         {% endif %}
     {% endwith %}
 
@@ -29,8 +31,10 @@
         <p class="campo-aviso">Use o nome completo ou uma identificacao clara do cliente.</p>
 
             <p>
-                <label for="cpf">CPF do cliente</label>
-                <input type="text" name="cpf" id="cpf" placeholder="(apenas numeros)" pattern="\d{11}" required>
+                <label for="cpf">CPF do cliente (opcional)</label>
+                <input type="text" name="cpf" id="cpf" placeholder="(apenas numeros)" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" title="Informe exatamente 11 numeros ou deixe em branco.">
+            </p>
+            <p class="campo-aviso">O CPF deve conter exatamente 11 numeros, sem pontos ou traços.</p>
         <p>
             <input type="submit" value="Cadastrar novo Cliente">
         </p>

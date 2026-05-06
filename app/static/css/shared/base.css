@@ -5,6 +5,42 @@
     font-style: normal;
 }
 
+:root {
+    --color-bg: #f7f3f7;
+    --color-surface: #fffdfd;
+    --color-surface-soft: #f2ebf1;
+    --color-border: #c9b8c5;
+    --color-border-strong: #7d6678;
+    --color-text: #2f2430;
+    --color-text-soft: #6e6170;
+    --color-header: #3a2f3f;
+    --color-header-strong: #2d2331;
+    --color-brand: #9a6b88;
+    --color-brand-strong: #7e536d;
+    --color-brand-soft: #ead8e4;
+    --color-info: #6a8fb8;
+    --color-info-strong: #446d96;
+    --color-info-soft: #e4eef8;
+    --color-success: #789a7a;
+    --color-success-strong: #517255;
+    --color-success-soft: #e6f0e4;
+    --color-warning: #c39a5c;
+    --color-warning-strong: #8f6d37;
+    --color-warning-soft: #f7efdf;
+    --color-danger: #c96d6b;
+    --color-danger-strong: #994c4c;
+    --color-danger-soft: #fae6e5;
+    --color-module-home: #f4eef4;
+    --color-module-sales: #80a685;
+    --color-module-purchases: #7597bb;
+    --color-module-stock: #d2a16a;
+    --color-module-payables: #cf7a6e;
+    --color-module-receivables: #68a5a0;
+    --color-module-clients: #a6789f;
+    --color-module-participants: #78b2ad;
+    --color-module-reports: #8a6b58;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -12,13 +48,14 @@
 }
 
 body {
-    background-color: #fff;
-    color: #000;
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 #cabecalho {
     text-align: center;
-    background-color: #333;
+    background: linear-gradient(180deg, var(--color-header), var(--color-header-strong));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logo-img,
@@ -40,7 +77,8 @@ body {
     left: 0;
     width: 100%;
     padding: 5px;
-    background-color: #333;
+    background: linear-gradient(180deg, var(--color-header), var(--color-header-strong));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .icones-interativos-form {
@@ -57,19 +95,20 @@ body {
 }
 
 .icones-interativos {
-    border: 3px solid rgb(0, 0, 0);
+    border: 2px solid rgba(47, 36, 48, 0.22);
     border-radius: 10px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 
 .icones-interativos:hover {
-    opacity: 0.85;
+    opacity: 0.92;
 }
 .versao {
     position: fixed;
     bottom: 5px;
     right: 10px;
     font-size: 12px;
-    color: #f5f5f5;
+    color: rgba(255, 248, 252, 0.88);
 }
 
 .pagina-inicio {
@@ -79,17 +118,15 @@ body {
     width: 100%;
 }
 
-
-
-#inicio { background-color: rgb(255, 255, 255); }
-#venda { background-color: rgb(76, 175, 80); }
-#compra { background-color: rgb(28, 124, 226); }
-#estoque { background-color: rgb(255, 152, 0); }
-#contas_pagar { background-color: rgb(244, 67, 54); }
-#contas_receber { background-color: rgb(0, 150, 136); }
-#clientes { background-color: rgb(156, 39, 176); }
-#participantes { background-color: rgb(16, 211, 185); }
-#relatorios { background-color: rgb(97, 56, 3); }
+#inicio { background-color: var(--color-module-home); }
+#venda { background-color: var(--color-module-sales); }
+#compra { background-color: var(--color-module-purchases); }
+#estoque { background-color: var(--color-module-stock); }
+#contas_pagar { background-color: var(--color-module-payables); }
+#contas_receber { background-color: var(--color-module-receivables); }
+#clientes { background-color: var(--color-module-clients); }
+#participantes { background-color: var(--color-module-participants); }
+#relatorios { background-color: var(--color-module-reports); }
 
 @media (max-width: 600px) {
     .main {

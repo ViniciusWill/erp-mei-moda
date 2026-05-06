@@ -1,13 +1,15 @@
 .formulario {
     font-family: "Poppins", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: rgb(0, 0, 0);
-    border: 1px solid black;
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
     border-radius: 10px;
     padding: 20px 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    background-color: var(--color-surface);
+    box-shadow: 0 10px 24px rgba(58, 47, 63, 0.08);
 }
 
 .formulario p {
@@ -30,17 +32,17 @@
 
 .formulario .form-aviso {
     padding: 10px 12px;
-    border: 1px solid rgb(255, 193, 7);
+    border: 1px solid var(--color-warning);
     border-radius: 8px;
-    background-color: rgb(255, 248, 225);
-    color: rgb(122, 79, 0);
+    background-color: var(--color-warning-soft);
+    color: var(--color-warning-strong);
     font-size: 0.8rem;
     line-height: 1.5;
 }
 
 .formulario .campo-aviso {
     margin-top: -2px;
-    color: rgb(95, 95, 95);
+    color: var(--color-text-soft);
     font-size: 0.75rem;
     line-height: 1.45;
 }
@@ -50,32 +52,34 @@
 .formulario input[type="number"],
 .formulario select {
     padding: 4px 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     font-family: inherit;
+    background-color: var(--color-surface-soft);
+    color: var(--color-text);
 }
 
 .formulario input:invalid,
 .formulario select:invalid {
-    border-color: rgb(210, 80, 70);
+    border-color: var(--color-danger);
 }
 
 .formulario .campo-invalido {
-    border-color: rgb(210, 80, 70);
+    border-color: var(--color-danger);
 }
 
 .formulario .campo-erro {
     display: block;
     width: 100%;
-    color: rgb(200, 40, 30);
+    color: var(--color-danger-strong);
     font-size: 0.72rem;
     text-align: right;
 }
 
 .formulario input:focus,
 .formulario select:focus {
-    outline: 2px solid rgba(28, 124, 226, 0.18);
-    border-color: rgb(28, 124, 226);
+    outline: 2px solid rgba(106, 143, 184, 0.2);
+    border-color: var(--color-info);
 }
 
 .formulario input[type="submit"] {
@@ -83,8 +87,14 @@
     padding: 8px 24px;
     cursor: pointer;
     border-radius: 6px;
-    border: 1px solid black;
+    border: 1px solid var(--color-brand-strong);
+    background-color: var(--color-brand);
+    color: #fff;
     font-family: inherit;
+}
+
+.formulario input[type="submit"]:hover {
+    background-color: var(--color-brand-strong);
 }
 
 @media (max-width: 600px) {

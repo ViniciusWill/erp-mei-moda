@@ -18,6 +18,18 @@
             </div>
         {% endif %}
     {% endwith %}
+    <section class="inicio-apresentacao">
+        <div class="inicio-apresentacao__marca">
+            <div class="inicio-apresentacao__logo">
+                <img src="{{ url_for('static', filename='imagens/logo.ico') }}" class="icones" alt="ERP MEI Moda">
+            </div>
+            <div class="inicio-apresentacao__texto">
+                <h1>ERP MEI Moda</h1>
+                <p>Operacao, cadastros e financeiro em um fluxo simples, com cada area identificada pela propria cor.</p>
+            </div>
+        </div>
+    </section>
+
 <nav class="menu-nav">
         <a href="{{ url_for('vendas.vendas') }}">
          <div id="venda" class="menu-item">

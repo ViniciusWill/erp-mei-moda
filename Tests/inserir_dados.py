@@ -1,16 +1,21 @@
 import os
 import sqlite3
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 import psycopg2
 
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from app.database.db_config import normalizar_database_url, obter_database_url
+
 
 def conectar_banco():
-    database_url = os.getenv("DATABASE_URL")
+    database_url = obter_database_url()
 
     if database_url:
-        url = database_url.replace("postgres://", "postgresql://", 1)
+        url = normalizar_database_url(database_url)
         return psycopg2.connect(url), True
 
     caminho_banco = Path(__file__).resolve().parent.parent / "dados" / "sistema_loja.db"
@@ -47,6 +52,11 @@ def buscar_ou_criar(cursor, is_postgres: bool, tabela: str, coluna: str, valor):
 
 
 def popular_banco():
+    if os.environ.get("RENDER") or os.environ.get("RENDER_SERVICE_ID"):
+        raise RuntimeError(
+            "Tests/inserir_dados.py nao deve ser executado em producao no Render."
+        )
+
     try:
         conn, is_postgres = conectar_banco()
         cur = conn.cursor()

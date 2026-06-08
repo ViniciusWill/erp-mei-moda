@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Nova senha{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-titulo">Nova senha</h1>
+        <p class="login-subtitulo">Escolha uma nova senha para acessar o ERP.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alerta alerta-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('auth.nova_senha') }}" method="post" class="login-form">
+            <label for="senha">Nova senha:</label>
+            <input type="password" id="senha" name="senha" minlength="6" required>
+
+            <label for="confirmar_senha">Confirmar senha:</label>
+            <input type="password" id="confirmar_senha" name="confirmar_senha" minlength="6" required>
+
+            <div class="login-acoes">
+                <button type="submit" class="login-btn login-btn--primario">Atualizar senha</button>
+                <button type="button" class="login-btn login-btn--secundario" onclick="window.location.href='{{ url_for('auth.login') }}'">Voltar ao login</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

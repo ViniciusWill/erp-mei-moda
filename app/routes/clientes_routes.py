@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
+from app.decorators import login_required
 from app.database.Clientes_repository import ClienteRepository
 from app.services.clientes_service import ClienteService
 
@@ -8,6 +8,7 @@ clientes_bp = Blueprint("clientes", __name__)
 
 
 @clientes_bp.route("/clientes", methods=["GET"])
+@login_required
 def clientes():
     clientes_repo = ClienteRepository()
     cli = clientes_repo.buscar_todos()
@@ -21,26 +22,32 @@ def clientes():
 
 
 @clientes_bp.route("/clientes/novo", methods=["GET", "POST"])
+@login_required
 def novo_cliente():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
-            ClienteService().lancamento_cliente(nome=nome)
-            flash("Cliente cadastrado com sucesso!", "sucesso")
+            cpf = request.form.get("cpf", "").strip()
+            ClienteService().lancamento_cliente(nome=nome, cpf=cpf)
+            flash("Cliente cadastrado com sucesso!", "success")
             return redirect(url_for("clientes.clientes"))
+        except ValueError as exc:
+            flash(str(exc), "error")
         except Exception as exc:
-            flash(f"Erro ao cadastrar cliente: {exc}", "erro")
+            flash(f"Erro ao cadastrar cliente: {exc}", "error")
 
     return render_template(
         "clientes/NovoCliente.html",
         logo_header="imagens/Clientes.png",
     )
 
+
 @clientes_bp.route("/clientes/<int:cliente_id>", methods=["POST"])
+@login_required
 def excluir_cliente(cliente_id):
     try:
         ClienteService().excluir_cliente(cliente_id)
-        flash("Cliente excluído com sucesso!", "sucesso")
+        flash("Cliente excluído com sucesso!", "success")
     except Exception as exc:
         erro = str(exc)
         if "foreign key" in erro.lower() or "fkey" in erro.lower():
@@ -50,5 +57,5 @@ def excluir_cliente(cliente_id):
                 "erro"
             )
         else:
-            flash(f"Erro ao excluir cliente: {exc}", "erro")
+            flash(f"Erro ao excluir cliente: {exc}", "error")
     return redirect(url_for("clientes.clientes"))

@@ -1,0 +1,117 @@
+.login-page {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top, rgba(154, 107, 136, 0.18), transparent 32%),
+        linear-gradient(180deg, #faf7fa 0%, var(--color-bg) 100%);
+}
+
+.login-card {
+    width: min(420px, calc(100vw - 32px));
+    padding: 30px 24px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    box-shadow: 0 16px 40px rgba(58, 47, 63, 0.12);
+    text-align: center;
+}
+
+.logo-shell {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 14px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, var(--color-brand-soft), #f7eef4);
+    border: 1px solid rgba(125, 102, 120, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card .logo-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    display: block;
+}
+
+.login-titulo {
+    margin: 0 0 8px;
+    font-size: 1.65rem;
+    color: var(--color-header-strong);
+}
+
+.login-subtitulo {
+    margin: 0 0 22px;
+    color: var(--color-text-soft);
+    font-size: 0.95rem;
+}
+
+.login-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 11px 12px;
+    margin-bottom: 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface-soft);
+    color: var(--color-text);
+}
+
+.login-form input:focus {
+    outline: 2px solid rgba(106, 143, 184, 0.18);
+    border-color: var(--color-info);
+}
+
+.login-acoes {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 11px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.login-btn--primario {
+    border: 1px solid var(--color-brand-strong);
+    background-color: var(--color-brand);
+    color: #fff;
+}
+
+.login-btn--primario:hover {
+    background-color: var(--color-brand-strong);
+}
+
+.login-btn--secundario {
+    border: 1px solid var(--color-info);
+    background-color: transparent;
+    color: var(--color-info-strong);
+}
+
+.login-btn--secundario:hover {
+    background-color: var(--color-info);
+    color: #fff;
+}
+
+@media (max-width: 640px) {
+    .login-page {
+        padding: 20px 14px;
+    }
+}

@@ -1,8 +1,13 @@
-import os
 import sqlite3
+import sys
 from pathlib import Path
 
 import psycopg2
+
+if __package__ in (None, ""):
+    sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from app.database.db_config import normalizar_database_url, obter_database_url
 
 
 def garantir_coluna(conn, db_url, tabela: str, coluna: str, definicao: str):
@@ -31,15 +36,15 @@ def garantir_coluna(conn, db_url, tabela: str, coluna: str, definicao: str):
 
 
 def criar_banco():
-    db_url = os.environ.get("DATABASE_URL")
+    db_url = obter_database_url()
 
     diretorio_dados = Path(__file__).parent.parent.parent / "dados"
     diretorio_dados.mkdir(parents=True, exist_ok=True)
     caminho_banco = diretorio_dados / "sistema_loja.db"
 
     if db_url:
-        print("Conectando ao PostgreSQL (Render)...")
-        url_corrigida = db_url.replace("postgres://", "postgresql://", 1)
+        print("Conectando ao PostgreSQL...")
+        url_corrigida = normalizar_database_url(db_url)
         conn = psycopg2.connect(url_corrigida)
         id_type = "SERIAL PRIMARY KEY"
     else:
@@ -144,6 +149,32 @@ def criar_banco():
             """
         )
 
+        cursor.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id {id_type},
+                nome TEXT NOT NULL,
+                cpf VARCHAR(11),
+                cnpj VARCHAR(18),
+                email VARCHAR(255) NOT NULL,
+                senha_hash VARCHAR(255) NOT NULL
+            )
+            """
+        )
+
+        cursor.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS recuperacao_senha (
+                id {id_type},
+                usuario_id INTEGER NOT NULL,
+                codigo_hash VARCHAR(255) NOT NULL,
+                expira_em TEXT NOT NULL,
+                usado_em TEXT,
+                criado_em TEXT NOT NULL,
+                FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+            )
+            """
+        )
         conn.commit()
         garantir_coluna(conn, db_url, "clientes", "cpf", "VARCHAR(11)")
         garantir_coluna(conn, db_url, "Participantes", "Cnpj", "VARCHAR(14)")

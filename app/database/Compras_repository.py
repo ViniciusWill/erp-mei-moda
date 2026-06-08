@@ -1,77 +1,89 @@
 from datetime import datetime
-from .base_repository import BaseRepository
+
+from sqlalchemy import select, delete
+
+from app.database.base_repository import BaseRepository
+from app.database.orm_models import (
+    Compra as CompraORM,
+    ContaPagar as ContaPagarORM,
+    Estoque as EstoqueORM,
+    Participante as ParticipanteORM,
+)
 from app.models.Compras_model import Compra, ContaPagar
 
 
 class CompraRepository(BaseRepository):
 
     def lancamento_compra(self, compra: Compra, nova_qtd_estoque: int):
-        """Insere a compra e atualiza o estoque em uma única transação."""
-        operacoes = [
-            (
-                """INSERT INTO compras (estoque_id, fornecedor_id, quantidade, valor_unitario, data_compra)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (
-                    compra.estoque_id,
-                    compra.fornecedor_id,
-                    compra.quantidade,
-                    compra.valor_unitario,
-                    compra.data_compra.strftime("%Y-%m-%d %H:%M:%S"),
-                ),
-            ),
-            (
-                "UPDATE estoque SET quantidade = ? WHERE id = ?",
-                (nova_qtd_estoque, compra.estoque_id),
-            ),
-        ]
-        ids = self.executar_transacao(operacoes)
-        novo_id = ids[0]
-        return novo_id, compra.valor_unitario
+        with self._session() as session:
+            nova_compra = CompraORM(
+                estoque_id=compra.estoque_id,
+                fornecedor_id=compra.fornecedor_id,
+                quantidade=compra.quantidade,
+                valor_unitario=compra.valor_unitario,
+                data_compra=compra.data_compra.strftime("%Y-%m-%d %H:%M:%S"),
+            )
+            session.add(nova_compra)
+            session.flush()
+
+            estoque = session.get(EstoqueORM, compra.estoque_id)
+            estoque.quantidade = nova_qtd_estoque
+
+            return nova_compra.id, compra.valor_unitario
 
     def lancamento_compra_parcelada(self, nova_parcela: ContaPagar):
-        self.executar_insert(
-            """INSERT INTO contas_a_pagar (compra_id, parcela, valor_parcela, valor_pendente, data_vencimento)
-               VALUES (?, ?, ?, ?, ?)""",
-            (
-                nova_parcela.compra_id,
-                nova_parcela.parcela,
-                nova_parcela.valor_parcela,
-                nova_parcela.valor_pendente,
-                nova_parcela.data_vencimento,
-            ),
-        )
+        with self._session() as session:
+            parcela = ContaPagarORM(
+                compra_id=nova_parcela.compra_id,
+                parcela=nova_parcela.parcela,
+                valor_parcela=nova_parcela.valor_parcela,
+                valor_pendente=nova_parcela.valor_pendente,
+                data_vencimento=str(nova_parcela.data_vencimento),
+            )
+            session.add(parcela)
 
     def buscar_todos_apagar(self):
-        rows = self.executar_select("SELECT * FROM contas_a_pagar")
-        return [ContaPagar(**dict(row)) for row in rows]
+        with self._session() as session:
+            rows = session.execute(select(ContaPagarORM)).scalars().all()
+            return [
+                ContaPagar(
+                    id=r.id,
+                    compra_id=r.compra_id,
+                    parcela=r.parcela,
+                    valor_parcela=r.valor_parcela,
+                    valor_pendente=r.valor_pendente,
+                    data_vencimento=r.data_vencimento,
+                )
+                for r in rows
+            ]
 
     def selecionar_todas_compras(self):
-        rows = self.executar_select("""
-            SELECT 
-            compras.id,
-            compras.fornecedor_id,
-            compras.estoque_id,
-            compras.quantidade,
-            compras.valor_unitario,
-            compras.data_compra,
-            estoque.nome_produto,
-            estoque.tamanho AS tamanho_produto,
-            participantes.nome AS nome_fornecedor
-        FROM compras
-        JOIN estoque ON compras.estoque_id = estoque.id
-        JOIN participantes ON compras.fornecedor_id = participantes.id
-    """)
-    
-        resultado = []
-        for row in rows:
-            r = dict(row)
-            if isinstance(r["data_compra"], str):
-                r["data_compra"] = datetime.strptime(r["data_compra"][:10], "%Y-%m-%d")
-            resultado.append(r)
-        return resultado
-    
+        with self._session() as session:
+            stmt = (
+                select(CompraORM)
+                .join(EstoqueORM, CompraORM.estoque_id == EstoqueORM.id)
+                .join(ParticipanteORM, CompraORM.fornecedor_id == ParticipanteORM.id)
+            )
+            rows = session.execute(stmt).scalars().all()
+            resultado = []
+            for row in rows:
+                data = row.data_compra
+                if isinstance(data, str):
+                    data = datetime.strptime(data[:10], "%Y-%m-%d")
+                resultado.append({
+                    "id": row.id,
+                    "fornecedor_id": row.fornecedor_id,
+                    "estoque_id": row.estoque_id,
+                    "quantidade": row.quantidade,
+                    "valor_unitario": row.valor_unitario,
+                    "data_compra": data,
+                    "nome_produto": row.estoque.nome_produto,
+                    "tamanho_produto": row.estoque.tamanho,
+                    "nome_fornecedor": row.fornecedor.nome,
+                })
+            return resultado
+
     def excluir_por_id(self, id: int):
-        self.executar_transacao([
-            ("DELETE FROM contas_a_pagar WHERE compra_id = ?", (id,)),
-            ("DELETE FROM compras WHERE id = ?", (id,)),
-        ])
+        with self._session() as session:
+            session.execute(delete(ContaPagarORM).where(ContaPagarORM.compra_id == id))
+            session.execute(delete(CompraORM).where(CompraORM.id == id))

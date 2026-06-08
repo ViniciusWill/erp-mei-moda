@@ -7,9 +7,11 @@
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
+        <div class="flash-container">
             {% for category, message in messages %}
                 <div class="alerta alerta-{{ category }}">{{ message }}</div>
             {% endfor %}
+        </div>
         {% endif %}
     {% endwith %}
 
@@ -36,7 +38,7 @@
     <div id="aba-vendas" class="aba-painel ativa">
         <div class="relatorios-tabela-wrapper">
             <div class="relatorios-controles relatorios-controles--topo">
-                <input type="text" class="relatorios-busca" placeholder="Buscar venda..." data-tabela-alvo="tabelaVendas">
+                <input type="text" id="buscaVendas" class="relatorios-busca" placeholder="Buscar venda..." data-tabela-alvo="tabelaVendas">
             </div>
             <table class="relatorios-tabela" id="tabelaVendas">
                 <thead>
@@ -83,7 +85,7 @@
     <div id="aba-compras" class="aba-painel">
         <div class="relatorios-tabela-wrapper">
             <div class="relatorios-controles relatorios-controles--topo">
-                <input type="text" class="relatorios-busca" placeholder="Buscar compra..." data-tabela-alvo="tabelaCompras">
+                <input type="text" id="buscaCompras" class="relatorios-busca" placeholder="Buscar compra..." data-tabela-alvo="tabelaCompras">
             </div>
             <table class="relatorios-tabela" id="tabelaCompras">
                 <thead>
@@ -128,5 +130,5 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/relatorios.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/pages/relatorios.js') }}"></script>
 {% endblock %}

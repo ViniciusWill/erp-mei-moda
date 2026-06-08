@@ -1,16 +1,15 @@
 import re
-
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
 from app.database.Clientes_repository import ClienteRepository
 from app.database.estoque_repository import EstoqueRepository
 from app.services.vendas_service import VendasService
-
+from app.decorators import login_required
 
 vendas_bp = Blueprint("vendas", __name__)
 
 
 @vendas_bp.route("/vendas", methods=["GET", "POST"])
+@login_required
 def vendas():
     estoque_repo = EstoqueRepository()
     clientes_repo = ClienteRepository()
@@ -37,10 +36,11 @@ def vendas():
                     parcelas=parcelas,
                 )
 
-            flash("Venda lancada com sucesso!", "sucesso")
-            return redirect(url_for("vendas.vendas"))
+
+            flash("Venda lançada com sucesso!", "success")
+            return redirect(url_for("home.index"))
         except Exception as exc:
-            flash(f"Erro ao lancar venda: {exc}", "erro")
+            flash(f"Erro ao lançar venda: {exc}", "error")
 
     produtos = estoque_repo.buscar_todos()
     clientes = clientes_repo.buscar_todos()
@@ -52,7 +52,9 @@ def vendas():
     )
 
 
+
 @vendas_bp.route("/vendas/novo-cliente", methods=["GET", "POST"])
+@login_required
 def novo_cliente_venda():
     if request.method == "POST":
         try:
@@ -64,16 +66,16 @@ def novo_cliente_venda():
                 return redirect(url_for("vendas.novo_cliente_venda"))
 
             if len(cpf) != 11:
-                flash("O CPF deve conter exatamente 11 numeros.", "erro")
+                flash("O CPF deve conter exatamente 11 numeros.", "error")
                 return redirect(url_for("vendas.novo_cliente_venda"))
 
             cliente_repo = ClienteRepository()
             cliente_repo.inserir_cliente(nome=nome, cpf=cpf)
 
-            flash("Cliente cadastrado com sucesso!", "sucesso")
-            return redirect(url_for("vendas.vendas"))
+            flash("Cliente cadastrado com sucesso!", "success")
+            return redirect(url_for("home.index"))
         except Exception as exc:
-            flash(f"Erro ao cadastrar cliente: {exc}", "erro")
+            flash(f"Erro ao cadastrar cliente: {exc}", "error")
 
     return render_template(
         "vendas/NovoCliente.html",

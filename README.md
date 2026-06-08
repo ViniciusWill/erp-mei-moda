@@ -1,232 +1,245 @@
-# ERP MEI Moda
+# ERP MEI Moda — v2.0
 
-Versao 1.0 de um ERP web para lojas de roupas, pensado para ajudar microempreendedores a controlar vendas, compras, estoque e financeiro em um unico lugar.
+Sistema web de gestao para microempreendedores de moda. Controla vendas, compras, estoque, clientes, fornecedores, financeiro e relatorios em um unico lugar.
 
-Sistema web de gestao criado para ajudar microempreendedores a organizarem o dia a dia da loja de forma simples, visual e acessivel, mesmo sem familiaridade com tecnologia.
-
-O projeto foi pensado para substituir controles manuais, anotacoes soltas e planilhas dificeis de manter, reunindo em um so lugar processos essenciais como:
-- vendas
-- compras
-- estoque
-- clientes
-- participantes/fornecedores
-- contas a pagar
-- contas a receber
-- relatorios
-
-O objetivo principal e tornar a gestao mais acessivel para pequenos lojistas, oferecendo uma ferramenta clara para acompanhar a operacao e reduzir a dependencia de controles improvisados.
-
-## Para quem este projeto foi pensado
-
-Este sistema foi idealizado para microempreendedores que:
-- precisam controlar melhor a loja
-- nao tem facilidade com planilhas ou softwares complexos
-- querem visualizar operacoes de forma mais organizada
-- precisam de um sistema simples para acompanhar entradas, saidas e compromissos financeiros
-
-## Como um usuario final deveria usar este sistema
-
-Para o publico-alvo do projeto, a melhor forma de uso nao e instalar Python, abrir terminal ou configurar banco manualmente.
-
-O formato mais adequado para um microempreendedor comum e:
-- acessar o sistema por um link no navegador
-- usar a aplicacao ja hospedada
-- nao precisar instalar dependencias tecnicas
-- nao precisar configurar banco de dados localmente
-
-Em outras palavras: para um usuario final sem perfil tecnico, o ideal e que o sistema esteja publicado online ou empacotado de forma simples, e nao que ele precise rodar o projeto manualmente.
-
-### Demonstracao online
+## Demonstracao online
 
 [https://erp-mei.onrender.com/](https://erp-mei.onrender.com/)
 
-## O uso local esta complexo para um usuario comum?
+---
 
-Sim. No estado atual do projeto, o fluxo local ainda e mais adequado para:
-- desenvolvedores
-- avaliadores tecnicos
-- testes de portifolio
+## O que o sistema faz
 
-Hoje, para rodar localmente, e necessario:
-- instalar Python
-- instalar dependencias com `pip`
-- criar as tabelas do banco
-- popular dados iniciais
-- iniciar a aplicacao manualmente
+- Lancamento de vendas e compras com parcelamento automatico
+- Controle de estoque com atualizacao automatica por venda/compra
+- Contas a pagar e a receber com acompanhamento de parcelas
+- Cadastro de clientes e fornecedores (participantes)
+- Relatorios de vendas, compras e financeiro
+- Acesso de visitante com banco zerado para demonstracao
+- Gerenciamento de acessos: roles de admin e operador
+- Pre-autorizacao de emails para novos cadastros
 
-Isso nao e o fluxo ideal para o microempreendedor final.
+---
 
-Por isso, a proposta mais coerente com o objetivo do projeto e:
-- disponibilizar o sistema online
-- ou futuramente empacotar uma versao mais simples para instalacao local
+## Arquitetura
 
-## Sobre deploy e acesso web
+```
+app/
+  database/
+    orm_models.py       modelos SQLAlchemy (schema declarativo)
+    db_config.py        engine principal, visitante e factory de testes
+    base_repository.py  session manager com suporte a visitante e testes
+    *_repository.py     repositories por dominio
+  models/               modelos Pydantic (validacao de entrada)
+  routes/               blueprints Flask por dominio
+  services/             regras de negocio
+  static/               css, js, imagens
+  templates/            HTML Jinja2
+alembic/                migrations de banco
+  versions/             scripts versionados de alteracao de schema
+Tests/
+  test_post_routes.py   suite de testes com SQLAlchemy injetado
+scripts/
+  criar_usuario.py      cria usuario interativamente
+  resetar_senha.py      reseta senha por nome/email/cpf
+  resetar_senha_direto.py  reseta senha apontando direto para o .db
+  sync_prod_to_test.py  copia producao para banco de teste
+run.py
+alembic.ini
+requirements.txt
+```
 
-O projeto pode ser publicado em plataformas de hospedagem para que o usuario acesse tudo pelo navegador.
+### Selecao de banco por contexto
 
-No momento, uma alternativa pratica para portfolio e testes e o uso de plataformas como Render, porque elas permitem:
-- publicar a aplicacao web rapidamente
-- configurar variaveis de ambiente
-- conectar com banco externo
-- disponibilizar uma URL publica para demonstracao
+| Contexto | Banco usado |
+|---|---|
+| `TEST_DATABASE_URL` definida | PostgreSQL de teste |
+| `DATABASE_URL` definida (ou Render) | PostgreSQL de producao |
+| Nenhuma variavel + local | SQLite `dados/sistema_loja.db` |
+| Sessao de visitante | SQLite `dados/visitante.db` (zerado a cada acesso) |
+| Testes automatizados | SQLite em memoria (injetado pelo fixture) |
 
-Isso nao substitui uma estrutura corporativa maior, mas e suficiente para demonstracao funcional, validacao de ideia e portfolio tecnico.
+---
 
-## Requisitos para desenvolvimento local
+## Requisitos
 
 - Python 3.13 ou superior
-- `pip`
+- PostgreSQL (opcional — SQLite e usado localmente sem configuracao)
 
-Opcional:
-- PostgreSQL, se voce quiser rodar com banco externo
+---
 
-## Como rodar localmente para desenvolvimento ou avaliacao tecnica
+## Como rodar localmente
 
-### 1. Clonar o projeto
+### 1. Clonar e criar ambiente virtual
+
 ```bash
 git clone <url-do-repositorio>
-cd loja-roupa-py
-```
-
-### 2. Criar e ativar um ambiente virtual
-
-Windows PowerShell:
-```powershell
+cd erp-mei-moda
 python -m venv venv
+# Windows PowerShell:
 .\venv\Scripts\Activate.ps1
-```
-
-Windows CMD:
-```bat
-python -m venv venv
-venv\Scripts\activate.bat
-```
-
-Linux/macOS:
-```bash
-python -m venv venv
+# Linux/macOS:
 source venv/bin/activate
 ```
 
-### 3. Instalar as dependencias
+### 2. Instalar dependencias
+
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configuracao do banco
+### 3. Configurar variaveis de ambiente (opcional)
 
-O projeto funciona de duas formas:
+Crie um arquivo `.env` na raiz seguindo o modelo `.env.example`.
 
-### Opcao A: uso local com SQLite
-Nao precisa configurar nada.
-
-Se a variavel `DATABASE_URL` nao existir, o sistema cria e usa automaticamente o arquivo local:
-
-`dados/sistema_loja.db`
-
-### Opcao B: uso com PostgreSQL
-Defina a variavel de ambiente `DATABASE_URL` antes de iniciar a aplicacao.
-
-Exemplo:
-```bash
-DATABASE_URL=postgresql://usuario:senha@host:5432/banco
+Para rodar com PostgreSQL de teste localmente:
+```env
+TEST_DATABASE_URL=postgresql://usuario:senha@host:5432/banco_teste
 ```
 
-No Windows PowerShell:
-```powershell
-$env:DATABASE_URL="postgresql://usuario:senha@host:5432/banco"
+Para envio de email (recuperacao de senha):
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=seu@email.com
+SMTP_PASSWORD=sua-senha-de-app
+SMTP_USE_TLS=true
 ```
-
-## Inicializacao do sistema
 
 ### 4. Criar as tabelas
+
 ```bash
-python app/database/setup_db.py
+alembic upgrade head
 ```
 
-### 5. Inserir dados iniciais de exemplo
+### 5. Criar usuario administrador
+
 ```bash
-python Tests/inserir_dados.py
+python scripts/criar_usuario.py
 ```
 
-Esse script pode ser executado mais de uma vez sem duplicar os registros principais.
+Depois, acesse a tela **Gerenciador de Acessos** para promover o usuario para `admin`.
 
-## Executar a aplicacao
+Ou via script direto:
 
-### 6. Rodar localmente
+```bash
+python scripts/resetar_senha.py
+```
+
+### 6. Rodar
+
 ```bash
 python run.py
 ```
 
-Depois disso, acesse:
+Acesse: `http://127.0.0.1:5000`
 
-`http://127.0.0.1:5000`
+---
 
-## Fluxo recomendado para primeiro teste
+## Migrations com Alembic
 
-Depois de abrir o sistema no navegador:
+O Alembic gerencia evolucoes de schema sem recriar o banco do zero.
 
-1. Acesse a tela inicial
-2. Verifique os cadastros em Clientes e Participantes
-3. Verifique os produtos em Estoque
-4. Teste um lancamento em Vendas
-5. Teste um lancamento em Compras
-6. Consulte Contas a Pagar, Contas a Receber e Relatorios
-
-Se voce executou `Tests/inserir_dados.py`, o sistema ja cria uma base minima para navegacao.
-
-## Deploy
-
-Fluxo recomendado de deploy:
-
-1. configurar a variavel `DATABASE_URL` no ambiente, se usar PostgreSQL
-2. instalar dependencias com `pip install -r requirements.txt`
-3. executar a criacao das tabelas:
-   `python app/database/setup_db.py`
-4. opcionalmente inserir dados iniciais:
-   `python Tests/inserir_dados.py`
-5. iniciar o servidor WSGI:
-   `gunicorn run:app`
-
-Comando de start completo:
 ```bash
-python app/database/setup_db.py && python Tests/inserir_dados.py && gunicorn run:app
+# Ver estado atual das migrations
+alembic current
+
+# Verificar se ha diferencas entre modelos e banco
+alembic check
+
+# Gerar migration automatica apos alterar orm_models.py
+alembic revision --autogenerate -m "descricao da mudanca"
+
+# Aplicar todas as migrations pendentes
+alembic upgrade head
+
+# Reverter uma migration
+alembic downgrade -1
 ```
 
-## Estrutura principal do projeto
+---
 
-```text
-app/
-  database/    acesso ao banco e repositories
-  models/      entidades e validacoes
-  routes/      blueprints e rotas da aplicacao
-  services/    regras de negocio
-  static/      css, js e imagens
-  templates/   paginas HTML
-Tests/
-  inserir_dados.py
-  test_post_routes.py
-run.py
+## Controle de acesso (roles)
+
+| Role | Permissoes |
+|---|---|
+| `admin` | Acesso total + Gerenciador de Acessos |
+| `operador` | Acesso ao sistema sem tela de gerenciamento |
+
+O admin pode:
+- Promover ou rebaixar outros usuarios
+- Pre-autorizar emails para novos cadastros (Primeiro Acesso)
+- Revogar autorizacoes pendentes
+
+**Regra:** um email so pode criar conta na tela de Primeiro Acesso se o admin o tiver adicionado na lista de emails autorizados.
+
+---
+
+## Acesso visitante
+
+O botao **Sou Visitante** na tela de login:
+- Reseta e recria o banco `dados/visitante.db` (zerado e limpo)
+- Sessao expira em 1 hora
+- Dados criados pelo visitante nao afetam o banco principal
+
+---
+
+## Scripts utilitarios
+
+```bash
+# Criar novo usuario
+python scripts/criar_usuario.py
+
+# Resetar senha por nome, email ou CPF (usa banco configurado no .env)
+python scripts/resetar_senha.py
+
+# Resetar senha apontando direto para um arquivo .db
+python scripts/resetar_senha_direto.py
+
+# Copiar producao para banco de teste
+python scripts/sync_prod_to_test.py
+python scripts/sync_prod_to_test.py --yes  # sem confirmacao interativa
 ```
+
+---
 
 ## Testes
 
-Para rodar os testes principais de POST:
 ```bash
-pytest Tests/test_post_routes.py -q -p no:cacheprovider
+pytest Tests/test_post_routes.py -v -p no:cacheprovider
 ```
 
-## Observacoes importantes
+Os testes usam SQLAlchemy com SQLite em arquivo temporario (isolado por teste). Nao exigem conexao externa.
 
-- O projeto usa nomes de arquivos sensiveis a maiusculas/minusculas em ambiente Linux.
-- Em producao, nao exponha a `DATABASE_URL` em logs.
-- Para ambiente local, o SQLite e suficiente para avaliacao e testes iniciais.
-- Para o usuario final do projeto, o melhor formato de entrega e acesso via navegador, com a aplicacao ja publicada.
+---
 
-## Status atual
+## Deploy (Render ou similar)
 
-O projeto esta organizado em:
-- blueprints para rotas
-- service layer para regras de negocio
-- repositories para persistencia
-- suporte a SQLite e PostgreSQL
+### Variaveis de ambiente obrigatorias
+
+| Variavel | Descricao |
+|---|---|
+| `DATABASE_URL` | URL do PostgreSQL de producao |
+| `SECRET_KEY` | Chave secreta Flask (gere uma aleatoria) |
+
+### Variaveis opcionais
+
+| Variavel | Descricao |
+|---|---|
+| `SMTP_HOST` / `SMTP_USER` / `SMTP_PASSWORD` | Configuracao de email para recuperacao de senha |
+
+### Comando de start
+
+```bash
+alembic upgrade head && gunicorn run:app
+```
+
+O `alembic upgrade head` aplica migrations pendentes antes de subir o servidor. Nao e necessario rodar `setup_db.py` — o Alembic gerencia o schema completo.
+
+---
+
+## Observacoes
+
+- Nao exponha `DATABASE_URL` ou `SECRET_KEY` em logs ou repositorios publicos.
+- O arquivo `.env` ja esta no `.gitignore`. Nunca commite credenciais reais.
+- Para o usuario final sem perfil tecnico, o formato recomendado e acesso via navegador com o sistema ja publicado online.

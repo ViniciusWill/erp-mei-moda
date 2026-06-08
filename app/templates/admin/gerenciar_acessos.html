@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciador de Acessos{% endblock %}
+
+{% block content %}
+<div class="pagina-inicio">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="alerta alerta-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- SEÇÃO 1: Usuários cadastrados -->
+    <h2 style="margin-bottom: 1rem;">Usuários cadastrados</h2>
+    <table style="width:100%; border-collapse: collapse; margin-bottom: 2.5rem;">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; text-align:left;">Nome</th>
+                <th style="padding:10px; text-align:left;">Email</th>
+                <th style="padding:10px; text-align:left;">Acesso atual</th>
+                <th style="padding:10px; text-align:left;">Alterar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding:10px;">{{ u.nome }}</td>
+                <td style="padding:10px;">{{ u.email }}</td>
+                <td style="padding:10px;">
+                    {% if u.role == "admin" %}
+                        <strong style="color:#2a7ae2;">Administrador</strong>
+                    {% else %}
+                        Operador
+                    {% endif %}
+                </td>
+                <td style="padding:10px;">
+                    {% if u.id != usuario_atual_id %}
+                    <form method="POST" action="{{ url_for('admin.atualizar_role') }}" style="display:inline;">
+                        <input type="hidden" name="usuario_id" value="{{ u.id }}">
+                        <select name="role" style="padding:4px 8px; margin-right:6px;">
+                            <option value="operador" {% if u.role == "operador" %}selected{% endif %}>Operador</option>
+                            <option value="admin"    {% if u.role == "admin"    %}selected{% endif %}>Administrador</option>
+                        </select>
+                        <button type="submit" style="padding:4px 12px; cursor:pointer;">Salvar</button>
+                    </form>
+                    {% else %}
+                        <em style="color:#888;">Você mesmo</em>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- SEÇÃO 2: Autorizar novo email -->
+    <h2 style="margin-bottom: 1rem;">Autorizar email para primeiro acesso</h2>
+    <p style="margin-bottom: 1rem; color:#555;">
+        Somente emails autorizados aqui poderão criar conta na tela de Primeiro Acesso.
+    </p>
+    <form method="POST" action="{{ url_for('admin.autorizar_email') }}"
+          style="display:flex; gap:10px; align-items:center; margin-bottom: 2rem;">
+        <input type="email" name="email" placeholder="email@exemplo.com" required
+               style="padding:8px 12px; min-width:280px; border:1px solid #ccc; border-radius:4px;">
+        <button type="submit" style="padding:8px 18px; cursor:pointer;">Autorizar</button>
+    </form>
+
+    <!-- SEÇÃO 3: Lista de emails autorizados -->
+    {% if emails %}
+    <table style="width:100%; border-collapse: collapse; margin-bottom: 2.5rem;">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; text-align:left;">Email</th>
+                <th style="padding:10px; text-align:left;">Status</th>
+                <th style="padding:10px; text-align:left;">Autorizado em</th>
+                <th style="padding:10px; text-align:left;">Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in emails %}
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding:10px;">{{ e.email }}</td>
+                <td style="padding:10px;">
+                    {% if e.usado %}
+                        <span style="color:#27ae60;"><strong>Conta criada</strong></span>
+                    {% else %}
+                        <span style="color:#e67e22;">Aguardando cadastro</span>
+                    {% endif %}
+                </td>
+                <td style="padding:10px; color:#777; font-size:0.9em;">{{ e.criado_em[:10] }}</td>
+                <td style="padding:10px;">
+                    {% if not e.usado %}
+                    <form method="POST" action="{{ url_for('admin.revogar_email') }}" style="display:inline;">
+                        <input type="hidden" name="email_id" value="{{ e.id }}">
+                        <button type="submit" style="padding:4px 12px; cursor:pointer; color:#c0392b;"
+                                onclick="return confirm('Revogar autorização de {{ e.email }}?')">
+                            Revogar
+                        </button>
+                    </form>
+                    {% else %}
+                        <em style="color:#aaa;">—</em>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="color:#999; margin-bottom: 2rem;">Nenhum email autorizado ainda.</p>
+    {% endif %}
+
+    <div class="home-acoes">
+        <a href="{{ url_for('home.index') }}" class="home-sair">Voltar ao início</a>
+    </div>
+
+</div>
+{% endblock %}

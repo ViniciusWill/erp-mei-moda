@@ -6,8 +6,8 @@ class ParticipanteService:
     def __init__(self):
         self.participante_repo = ParticipantesRepository()
 
-    def lancamento_participante(self, nome: str):
-        novo_participante = Participante(nome=nome)
+    def lancamento_participante(self, nome: str, cnpj: str = ""):
+        novo_participante = Participante(nome=nome, cnpj=cnpj)
         self.participante_repo.lancamento_participante(novo_participante)
 
     def excluir_participante(self, participante_id: int):

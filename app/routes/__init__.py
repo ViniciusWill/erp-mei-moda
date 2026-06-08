@@ -1,3 +1,5 @@
+from .admin_routes import admin_bp
+from .auth_routes import auth_bp
 from .clientes_routes import clientes_bp
 from .compras_routes import compras_bp
 from .contas_a_pagar_routes import contas_a_pagar_bp
@@ -19,3 +21,5 @@ def register_blueprints(app):
     app.register_blueprint(clientes_bp)
     app.register_blueprint(participantes_bp)
     app.register_blueprint(relatorios_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp)

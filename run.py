@@ -1,8 +1,7 @@
 from dotenv import load_dotenv
-import os
+from pathlib import Path
 
-
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent / ".env")
 from app import create_app
 
 app = create_app()

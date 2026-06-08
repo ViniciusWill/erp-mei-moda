@@ -1,12 +1,15 @@
 from flask import Blueprint, flash, redirect, render_template, url_for
-
 from app.database.Compras_repository import CompraRepository
 from app.database.Vendas_repository import VendaRepository
+from app.decorators import login_required
+
 
 relatorios_bp = Blueprint("relatorios", __name__)
 
 
+
 @relatorios_bp.route("/relatorios")
+@login_required
 def relatorios():
     compras_repo = CompraRepository()
     vendas_repo = VendaRepository()
@@ -30,20 +33,23 @@ def relatorios():
 
 
 @relatorios_bp.route("/relatorios/venda/<int:venda_id>", methods=["POST"])
+@login_required
 def excluir_venda(venda_id):
     try:
         VendaRepository().excluir_por_id(venda_id)
-        flash("Venda excluída com sucesso!", "sucesso")
+        flash("Venda excluída com sucesso!", "success")
     except Exception as exc:
-        flash(f"Erro ao excluir venda: {exc}", "erro")
+        flash(f"Erro ao excluir venda: {exc}", "error")
     return redirect(url_for("relatorios.relatorios"))
 
 
+
 @relatorios_bp.route("/relatorios/compra/<int:compra_id>", methods=["POST"])
+@login_required
 def excluir_compra(compra_id):
     try:
         CompraRepository().excluir_por_id(compra_id)
-        flash("Compra excluída com sucesso!", "sucesso")
+        flash("Compra excluída com sucesso!", "success")
     except Exception as exc:
-        flash(f"Erro ao excluir compra: {exc}", "erro")
+        flash(f"Erro ao excluir compra: {exc}", "error")
     return redirect(url_for("relatorios.relatorios"))

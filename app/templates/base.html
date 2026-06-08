@@ -3,38 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='imagens/logo.ico') }}" type="image/x-icon">
+    <meta name="app-version" content="1.2">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico'         ) }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>{% block title %}Loja{% endblock %}</title>
 </head>
 <body>
-
     <header id="cabecalho">
-
         <picture>
-            <img class="logo-img" src="{{ url_for('static', filename=logo_header) }}" alt="Logo ERP">
+            <img class="logo-img" src="{{ url_for('static', filename=logo_header|default('favicon.ico')) }}" alt="Logo ERP">
         </picture>
     </header>
-    <main class="main">
+    <main class="main {% if request.endpoint in ['auth.login', 'auth.esquecisenha', 'auth.verificar_codigo', 'auth.nova_senha', 'auth.cadastrar_cliente'] %}login-page{% endif %}">
+        {% if session.get('visitante') and session.get('visitante_expira_em') and request.endpoint and not request.endpoint.startswith('auth.') %}
+        <div class="temporizador-visitante" data-expira-em="{{ session.get('visitante_expira_em') }}">
+            <span>Acesso visitante</span>
+            <strong id="visitante-tempo-restante">01:00:00</strong>
+        </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
-    {% block rodape %}
+    {% if request.endpoint and not request.endpoint.startswith('auth.') and request.endpoint != 'home.index' %}
     <footer class="rodape-icones">
         <nav class="menu-icones-interativos">
-
             {% if request.endpoint != 'home.index' %}
             <a href="{{ url_for('home.index') }}" title="Inicio">
                 <div class="icones-interativos" id="inicio">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/logo.ico') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/logo.ico') }}" alt="Inicio">
                 </div>
             </a>
             {% endif %}
 
             {% if request.endpoint not in ['vendas.vendas', 'vendas.novo_cliente_venda'] %}
-            <a href="{{ url_for('vendas.vendas') }}" title="Vendas"> 
+            <a href="{{ url_for('vendas.vendas') }}" title="Vendas">
                 <div class="icones-interativos" id="venda">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/venda.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/venda.png') }}" alt="Vendas">
                 </div>
             </a>
             {% endif %}
@@ -42,14 +47,15 @@
             {% if request.endpoint not in ['compras.compras', 'compras.novo_produto_compra', 'compras.novo_fornecedor_compra'] %}
             <a href="{{ url_for('compras.compras') }}" title="Compras">
                 <div class="icones-interativos" id="compra">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/compra.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/compra.png') }}" alt="Compras">
                 </div>
             </a>
             {% endif %}
+
             {% if request.endpoint != 'estoque.estoque' %}
             <a href="{{ url_for('estoque.estoque') }}" title="Estoque">
                 <div class="icones-interativos" id="estoque">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/estoque.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/estoque.png') }}" alt="Estoque">
                 </div>
             </a>
             {% endif %}
@@ -57,7 +63,7 @@
             {% if request.endpoint != 'contas_a_pagar.contas_pagar' %}
             <a href="{{ url_for('contas_a_pagar.contas_pagar') }}" title="Contas a Pagar">
                 <div class="icones-interativos" id="contas_pagar">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/pagar.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/pagar.png') }}" alt="Contas a Pagar">
                 </div>
             </a>
             {% endif %}
@@ -65,7 +71,7 @@
             {% if request.endpoint != 'contas_a_receber.contas_receber' %}
             <a href="{{ url_for('contas_a_receber.contas_receber') }}" title="Contas a Receber">
                 <div class="icones-interativos" id="contas_receber">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/receber.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/receber.png') }}" alt="Contas a Receber">
                 </div>
             </a>
             {% endif %}
@@ -73,7 +79,7 @@
             {% if request.endpoint not in ['clientes.clientes', 'clientes.novo_cliente'] %}
             <a href="{{ url_for('clientes.clientes') }}" title="Clientes">
                 <div class="icones-interativos" id="clientes">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Clientes.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Clientes.png') }}" alt="Clientes">
                 </div>
             </a>
             {% endif %}
@@ -81,7 +87,7 @@
             {% if request.endpoint not in ['participantes.participantes', 'participantes.novo_participante'] %}
             <a href="{{ url_for('participantes.participantes') }}" title="Participantes">
                 <div class="icones-interativos" id="participantes">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/participantes.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/participantes.png') }}" alt="Participantes">
                 </div>
             </a>
             {% endif %}
@@ -89,14 +95,46 @@
             {% if request.endpoint != 'relatorios.relatorios' %}
             <a href="{{ url_for('relatorios.relatorios') }}" title="Relatorios">
                 <div class="icones-interativos" id="relatorios">
-                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Relatorio.png') }}">
+                    <img class="icones-interativos-form" src="{{ url_for('static', filename='imagens/Relatorio.png') }}" alt="Relatorios">
                 </div>
             </a>
             {% endif %}
-
         </nav>
+        <span class="versao">ERP MEI Moda v1.2</span>
     </footer>
-    {% endblock %}
+    {% endif %}
 
+    {% if session.get('visitante') and session.get('visitante_expira_em') and request.endpoint and not request.endpoint.startswith('auth.') %}
+    <script>
+        (function () {
+            const painel = document.querySelector(".temporizador-visitante");
+            const contador = document.getElementById("visitante-tempo-restante");
+            if (!painel || !contador) {
+                return;
+            }
+
+            const expiraEm = new Date(painel.dataset.expiraEm).getTime();
+
+            function atualizarTemporizador() {
+                const restante = expiraEm - Date.now();
+                if (restante <= 0) {
+                    contador.textContent = "00:00:00";
+                    window.location.href = "{{ url_for('auth.login') }}";
+                    return;
+                }
+
+                const totalSegundos = Math.floor(restante / 1000);
+                const horas = String(Math.floor(totalSegundos / 3600)).padStart(2, "0");
+                const minutos = String(Math.floor((totalSegundos % 3600) / 60)).padStart(2, "0");
+                const segundos = String(totalSegundos % 60).padStart(2, "0");
+                contador.textContent = `${horas}:${minutos}:${segundos}`;
+            }
+
+            atualizarTemporizador();
+            setInterval(atualizarTemporizador, 1000);
+        })();
+    </script>
+    {% endif %}
+    <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

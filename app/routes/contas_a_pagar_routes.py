@@ -1,14 +1,14 @@
 from datetime import datetime
-
 from flask import Blueprint, render_template
-
 from app.database.Compras_repository import CompraRepository
+from app.decorators import login_required
 
 
 contas_a_pagar_bp = Blueprint("contas_a_pagar", __name__)
 
 
 @contas_a_pagar_bp.route("/financeiro/contas_pagar")
+@login_required
 def contas_pagar():
     repo = CompraRepository()
     contas = repo.buscar_todos_apagar()
@@ -25,7 +25,7 @@ def contas_pagar():
     )
 
     return render_template(
-        "financeiro/ContasPagar.html",
+        "Financeiro/ContasPagar.html",
         logo_header="imagens/pagar.png",
         contas=contas,
         hoje=hoje,

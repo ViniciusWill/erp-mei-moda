@@ -1,13 +1,14 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
 from app.database.Participantes_repository import ParticipantesRepository
+from app.decorators import login_required
 from app.services.participantes_service import ParticipanteService
-
 
 participantes_bp = Blueprint("participantes", __name__)
 
 
+
 @participantes_bp.route("/participantes", methods=["GET"])
+@login_required
 def participantes():
     participantes_repo = ParticipantesRepository()
     partic = participantes_repo.buscar_todos()
@@ -21,15 +22,17 @@ def participantes():
 
 
 @participantes_bp.route("/participantes/novo", methods=["GET", "POST"])
+@login_required
 def novo_participante():
     if request.method == "POST":
         try:
             nome = request.form.get("nome", "").strip()
-            ParticipanteService().lancamento_participante(nome=nome)
-            flash("Participante cadastrado com sucesso!", "sucesso")
+            cnpj = request.form.get("cnpj", "").strip()
+            ParticipanteService().lancamento_participante(nome=nome, cnpj=cnpj)
+            flash("Participante cadastrado com sucesso!", "success")
             return redirect(url_for("participantes.participantes"))
         except Exception as exc:
-            flash(f"Erro ao cadastrar participante: {exc}", "erro")
+            flash(f"Erro ao cadastrar participante: {exc}", "error")
 
     return render_template(
         "participantes/NovoParticipante.html",
@@ -38,18 +41,19 @@ def novo_participante():
 
 
 @participantes_bp.route("/participantes/<int:participante_id>", methods=["POST"])
+@login_required
 def excluir_participante(participante_id):
     try:
         ParticipanteService().excluir_participante(participante_id)
-        flash("Participante excluído com sucesso!", "sucesso")
+        flash("Participante excluído com sucesso!", "success")
     except Exception as exc:
         erro = str(exc)
         if "foreign key" in erro.lower() or "fkey" in erro.lower():
             flash(
                 "Este participante possui compras registradas. "
                 "Para excluí-lo, primeiro exclua as compras vinculadas a ele na tela de Relatórios.",
-                "erro"
+                "error"
             )
         else:
-            flash(f"Erro ao excluir participante: {exc}", "erro")
+            flash(f"Erro ao excluir participante: {exc}", "error")
     return redirect(url_for("participantes.participantes"))

@@ -149,6 +149,32 @@ def criar_banco():
             """
         )
 
+        cursor.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id {id_type},
+                nome TEXT NOT NULL,
+                cpf VARCHAR(11),
+                cnpj VARCHAR(18),
+                email VARCHAR(255) NOT NULL,
+                senha_hash VARCHAR(255) NOT NULL
+            )
+            """
+        )
+
+        cursor.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS recuperacao_senha (
+                id {id_type},
+                usuario_id INTEGER NOT NULL,
+                codigo_hash VARCHAR(255) NOT NULL,
+                expira_em TEXT NOT NULL,
+                usado_em TEXT,
+                criado_em TEXT NOT NULL,
+                FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+            )
+            """
+        )
         conn.commit()
         garantir_coluna(conn, db_url, "clientes", "cpf", "VARCHAR(11)")
         garantir_coluna(conn, db_url, "Participantes", "Cnpj", "VARCHAR(14)")

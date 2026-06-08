@@ -1,13 +1,14 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
 from app.database.Participantes_repository import ParticipantesRepository
+from app.decorators import login_required
 from app.services.participantes_service import ParticipanteService
-
 
 participantes_bp = Blueprint("participantes", __name__)
 
 
+
 @participantes_bp.route("/participantes", methods=["GET"])
+@login_required
 def participantes():
     participantes_repo = ParticipantesRepository()
     partic = participantes_repo.buscar_todos()
@@ -21,6 +22,7 @@ def participantes():
 
 
 @participantes_bp.route("/participantes/novo", methods=["GET", "POST"])
+@login_required
 def novo_participante():
     if request.method == "POST":
         try:
@@ -39,6 +41,7 @@ def novo_participante():
 
 
 @participantes_bp.route("/participantes/<int:participante_id>", methods=["POST"])
+@login_required
 def excluir_participante(participante_id):
     try:
         ParticipanteService().excluir_participante(participante_id)

@@ -1,14 +1,14 @@
 from datetime import datetime
-
 from flask import Blueprint, render_template
-
 from app.database.Vendas_repository import VendaRepository
+from app.decorators import login_required
 
 
 contas_a_receber_bp = Blueprint("contas_a_receber", __name__)
 
 
 @contas_a_receber_bp.route("/financeiro/contas_receber")
+@login_required
 def contas_receber():
     repo = VendaRepository()
     contas = repo.buscar_todos_areceber()

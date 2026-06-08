@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-
+from app.decorators import login_required
 from app.database.estoque_repository import EstoqueRepository
 
 
@@ -7,6 +7,7 @@ estoque_bp = Blueprint("estoque", __name__)
 
 
 @estoque_bp.route("/estoque")
+@login_required 
 def estoque():
     estoque_repo = EstoqueRepository()
     produtos = estoque_repo.buscar_todos()

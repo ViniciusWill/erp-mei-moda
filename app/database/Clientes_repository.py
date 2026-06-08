@@ -1,28 +1,47 @@
-from .base_repository import BaseRepository
-from app.models.Clientes_model import Cliente
+from sqlalchemy import select, func
+
+from app.database.base_repository import BaseRepository
+from app.database.orm_models import Cliente as ClienteORM
 
 
 class ClienteRepository(BaseRepository):
 
-    def salvar(self, cliente: Cliente):
-        return self.executar_insert(
-            "INSERT INTO clientes (nome, cpf) VALUES (?, ?)", (cliente.nome, cliente.cpf)
-        )
+    def salvar(self, cliente):
+        with self._session() as session:
+            novo = ClienteORM(nome=cliente.nome, cpf=cliente.cpf)
+            session.add(novo)
+            session.flush()
+            return novo.id
 
     def inserir_cliente(self, nome: str, cpf: str | None = None):
-        return self.executar_insert(
-            "INSERT INTO clientes (nome, cpf) VALUES (?, ?)",
-            (nome, cpf),
-        )
+        with self._session() as session:
+            novo = ClienteORM(nome=nome, cpf=cpf)
+            session.add(novo)
+            session.flush()
+            return novo.id
 
     def buscar_todos(self):
-        rows = self.executar_select("SELECT * FROM clientes")
-        return [{"id": row["id"], "nome": row["nome"], "cpf": row["cpf"]} for row in rows]
-    
+        with self._session() as session:
+            rows = session.execute(select(ClienteORM)).scalars().all()
+            return [{"id": r.id, "nome": r.nome, "cpf": r.cpf} for r in rows]
+
+    def buscar_por_nome(self, nome: str):
+        with self._session() as session:
+            stmt = select(ClienteORM).where(func.lower(ClienteORM.nome) == nome.lower())
+            row = session.execute(stmt).scalar_one_or_none()
+            if row:
+                return {"id": row.id, "nome": row.nome, "cpf": row.cpf}
+            return None
+
     def buscar_por_id(self, cliente_id: int):
-        row = self.executar_select("SELECT * FROM clientes WHERE id = ?", (cliente_id,))
-        if row:
-            return {"id": row[0]["id"], "nome": row[0]["nome"], "cpf": row[0]["cpf"]}
-        return None
+        with self._session() as session:
+            row = session.get(ClienteORM, cliente_id)
+            if row:
+                return {"id": row.id, "nome": row.nome, "cpf": row.cpf}
+            return None
+
     def excluir(self, cliente):
-        self.executar_delete("DELETE FROM clientes WHERE id = ?", (cliente["id"],))
+        with self._session() as session:
+            row = session.get(ClienteORM, cliente["id"])
+            if row:
+                session.delete(row)

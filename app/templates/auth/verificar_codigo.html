@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Verificar codigo{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-titulo">Digite o codigo</h1>
+        <p class="login-subtitulo">Informe o codigo enviado para o seu email.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alerta alerta-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('auth.verificar_codigo') }}" method="post" class="login-form">
+            <input type="hidden" name="email" value="{{ email }}">
+
+            <label for="codigo">Codigo:</label>
+            <input type="text" id="codigo" name="codigo" inputmode="numeric" maxlength="6" required>
+
+            <div class="login-acoes">
+                <button type="submit" class="login-btn login-btn--primario">Confirmar codigo</button>
+                <button type="button" class="login-btn login-btn--secundario" onclick="window.location.href='{{ url_for('auth.esquecisenha') }}'">Reenviar codigo</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,16 +1,15 @@
 import re
-
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
 from app.database.Clientes_repository import ClienteRepository
 from app.database.estoque_repository import EstoqueRepository
 from app.services.vendas_service import VendasService
-
+from app.decorators import login_required
 
 vendas_bp = Blueprint("vendas", __name__)
 
 
 @vendas_bp.route("/vendas", methods=["GET", "POST"])
+@login_required
 def vendas():
     estoque_repo = EstoqueRepository()
     clientes_repo = ClienteRepository()
@@ -53,7 +52,9 @@ def vendas():
     )
 
 
+
 @vendas_bp.route("/vendas/novo-cliente", methods=["GET", "POST"])
+@login_required
 def novo_cliente_venda():
     if request.method == "POST":
         try:

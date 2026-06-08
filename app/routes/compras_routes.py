@@ -1,15 +1,16 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 import re
-
 from app.database.Participantes_repository import ParticipantesRepository
 from app.database.estoque_repository import EstoqueRepository
 from app.services.compras_service import CompraService
-
+from app.decorators import login_required
 
 compras_bp = Blueprint("compras", __name__)
 
 
+
 @compras_bp.route("/compras", methods=["GET", "POST"])
+@login_required
 def compras():
     estoque_repo = EstoqueRepository()
     participantes_repo = ParticipantesRepository()
@@ -55,7 +56,9 @@ def compras():
     )
 
 
+
 @compras_bp.route("/compras/novo-produto", methods=["GET", "POST"])
+@login_required
 def novo_produto_compra():
     if request.method == "POST":
         try:
@@ -81,7 +84,10 @@ def novo_produto_compra():
         "compras/NovoProduto.html",
         logo_header="imagens/compra.png",
     )
+
+
 @compras_bp.route("/compras/novo-fornecedor", methods=["GET", "POST"])
+@login_required
 def novo_fornecedor_compra():
     produto_id = request.args.get("produto_id", "")
 

@@ -1,30 +1,40 @@
-from .base_repository import BaseRepository
+from sqlalchemy import select
+
+from app.database.base_repository import BaseRepository
+from app.database.orm_models import Participante as ParticipanteORM
 from app.models import Participante
- 
- 
+
+
 class ParticipantesRepository(BaseRepository):
- 
+
     def lancamento_participante(self, participante: Participante):
-        self.executar_insert(
-            "INSERT INTO Participantes (nome, cnpj) VALUES (?, ?)",
-            (participante.nome, participante.cnpj),
-        )
+        with self._session() as session:
+            novo = ParticipanteORM(nome=participante.nome, cnpj=participante.cnpj)
+            session.add(novo)
+            session.flush()
+            return novo.id
 
     def inserir_participante(self, nome: str, cnpj: str | None = None, tipo: str | None = None):
-        return self.executar_insert(
-            "INSERT INTO Participantes (nome, cnpj) VALUES (?, ?)",
-            (nome, cnpj),
-        )
+        with self._session() as session:
+            novo = ParticipanteORM(nome=nome, cnpj=cnpj)
+            session.add(novo)
+            session.flush()
+            return novo.id
 
     def buscar_todos(self):
-        rows = self.executar_select("SELECT * FROM Participantes")
-        return [{"id": row["id"], "nome": row["nome"], "cnpj": row["cnpj"]} for row in rows]
+        with self._session() as session:
+            rows = session.execute(select(ParticipanteORM)).scalars().all()
+            return [{"id": r.id, "nome": r.nome, "cnpj": r.cnpj} for r in rows]
 
     def buscar_por_id(self, participante_id: int):
-        row = self.executar_select("SELECT * FROM participantes WHERE id = ?", (participante_id,))
-        if row:
-            return {"id": row[0]["id"], "nome": row[0]["nome"], "cnpj": row[0]["cnpj"]}
-        return None
+        with self._session() as session:
+            row = session.get(ParticipanteORM, participante_id)
+            if row:
+                return {"id": row.id, "nome": row.nome, "cnpj": row.cnpj}
+            return None
 
     def excluir(self, participante):
-        self.executar_delete("DELETE FROM participantes WHERE id = ?", (participante["id"],))
+        with self._session() as session:
+            row = session.get(ParticipanteORM, participante["id"])
+            if row:
+                session.delete(row)

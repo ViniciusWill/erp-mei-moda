@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Esqueci a senha{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1 class="login-titulo">Esqueci minha senha</h1>
+        <p class="login-subtitulo">Digite seu email para receber as instru&ccedil;&otilde;es de recupera&ccedil;&atilde;o de senha.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alerta alerta-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('auth.esquecisenha') }}" method="post" class="login-form">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <div class="login-acoes">
+                <button type="submit" class="login-btn login-btn--primario">Enviar</button>
+                <button type="button" class="login-btn login-btn--secundario" onclick="window.location.href='{{ url_for('auth.login') }}'">Voltar ao login</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

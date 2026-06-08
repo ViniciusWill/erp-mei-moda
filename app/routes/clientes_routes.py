@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-
+from app.decorators import login_required
 from app.database.Clientes_repository import ClienteRepository
 from app.services.clientes_service import ClienteService
 
@@ -8,6 +8,7 @@ clientes_bp = Blueprint("clientes", __name__)
 
 
 @clientes_bp.route("/clientes", methods=["GET"])
+@login_required
 def clientes():
     clientes_repo = ClienteRepository()
     cli = clientes_repo.buscar_todos()
@@ -21,6 +22,7 @@ def clientes():
 
 
 @clientes_bp.route("/clientes/novo", methods=["GET", "POST"])
+@login_required
 def novo_cliente():
     if request.method == "POST":
         try:
@@ -29,6 +31,8 @@ def novo_cliente():
             ClienteService().lancamento_cliente(nome=nome, cpf=cpf)
             flash("Cliente cadastrado com sucesso!", "success")
             return redirect(url_for("clientes.clientes"))
+        except ValueError as exc:
+            flash(str(exc), "error")
         except Exception as exc:
             flash(f"Erro ao cadastrar cliente: {exc}", "error")
 
@@ -37,7 +41,9 @@ def novo_cliente():
         logo_header="imagens/Clientes.png",
     )
 
+
 @clientes_bp.route("/clientes/<int:cliente_id>", methods=["POST"])
+@login_required
 def excluir_cliente(cliente_id):
     try:
         ClienteService().excluir_cliente(cliente_id)

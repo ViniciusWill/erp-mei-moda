@@ -1,5 +1,12 @@
 @font-face {
     font-family: "Poppins";
+    src: url("../../fontes/Poppins/Poppins-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins";
     src: url("../../fontes/Poppins/Poppins-Bold.ttf") format("truetype");
     font-weight: bold;
     font-style: normal;
@@ -39,6 +46,7 @@
     --color-module-clients: #a6789f;
     --color-module-participants: #78b2ad;
     --color-module-reports: #8a6b58;
+    --color-module-admin: #6e6484;
 }
 
 * {
@@ -48,43 +56,56 @@
 }
 
 body {
+    font-family: "Poppins", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: var(--color-bg);
     color: var(--color-text);
 }
 
 #cabecalho {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 64px;
     background: linear-gradient(180deg, var(--color-header), var(--color-header-strong));
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#cabecalho picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-img,
 .icones {
     width: 50px;
     height: 50px;
+    object-fit: contain;
 }
 
 .main {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
+    min-height: calc(100vh - 64px);
+    padding: 24px 24px 72px;
+}
+
+.login-page {
+    padding-bottom: 24px;
 }
 
 .rodape-icones {
     position: fixed;
     bottom: 0;
     left: 0;
+    z-index: 900;
     width: 100%;
-    padding: 5px;
+    min-height: 42px;
+    padding: 5px 10px;
     background: linear-gradient(180deg, var(--color-header), var(--color-header-strong));
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.icones-interativos-form {
-    width: 20px;
-    height: 20px;
-    padding-bottom: 1px;
 }
 
 .menu-icones-interativos {
@@ -95,20 +116,55 @@ body {
 }
 
 .icones-interativos {
+    width: 32px;
+    height: 32px;
     border: 2px solid rgba(47, 36, 48, 0.22);
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .icones-interativos:hover {
     opacity: 0.92;
 }
+
+.icones-interativos-form {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
 .versao {
     position: fixed;
     bottom: 5px;
     right: 10px;
     font-size: 12px;
     color: rgba(255, 248, 252, 0.88);
+}
+
+.temporizador-visitante {
+    position: fixed;
+    top: 112px;
+    right: 16px;
+    z-index: 850;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--color-warning);
+    border-radius: 8px;
+    background-color: var(--color-warning-soft);
+    color: var(--color-warning-strong);
+    box-shadow: 0 8px 20px rgba(58, 47, 63, 0.12);
+    font-size: 0.8rem;
+}
+
+.temporizador-visitante strong {
+    min-width: 70px;
+    text-align: center;
+    color: var(--color-header-strong);
 }
 
 .pagina-inicio {
@@ -127,16 +183,35 @@ body {
 #clientes { background-color: var(--color-module-clients); }
 #participantes { background-color: var(--color-module-participants); }
 #relatorios { background-color: var(--color-module-reports); }
+#admin { background-color: var(--color-module-admin); justify-content: center; }
 
 @media (max-width: 600px) {
     .main {
         align-items: flex-start;
-        padding-top: 18px;
+        padding: 18px 14px 96px;
+    }
+
+    .login-page {
+        padding-bottom: 18px;
     }
 
     .menu-icones-interativos {
         grid-template-columns: repeat(4, 50px);
         justify-content: center;
+        padding-right: 0;
+    }
+
+    .versao {
+        position: static;
+        display: block;
+        margin-top: 4px;
+        text-align: center;
+    }
+
+    .temporizador-visitante {
+        position: static;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 14px;
     }
 }
-
